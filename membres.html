@@ -1,127 +1,201 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Espace membres – Les Fêlés du Bocal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="page">
-    <!-- HEADER identique -->
-    <header>
-      <nav class="nav">
-        <div class="logo">
-          <div class="logo-placeholder">LOGO</div>
-          <span>Les Fêlés du Bocal</span>
-        </div>
-        <div class="nav-links">
-          <a href="index.html#home">Accueil</a>
-          <a href="index.html#values">Esprit motard</a>
-          <a href="index.html#events">Sorties</a>
-          <a href="index.html#membership">Adhésion</a>
-          <a href="membres.html">Espace membres</a>
-          <a href="index.html#contact">Contact</a>
-        </div>
-        <a href="index.html#membership" class="nav-cta">Adhérer</a>
-      </nav>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Espace membres – Les Fêlés du Bocal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/membres.css" />
+  </head>
+  <body>
+    <div class="page">
+      <!-- HEADER identique -->
+      <header>
+        <nav class="nav">
+          <div class="logo">
+            <div class="logo-placeholder">LOGO</div>
+            <span>Les Fêlés du Bocal</span>
+          </div>
+          <div class="nav-links">
+            <a href="index.html#home">Accueil</a>
+            <a href="index.html#values">Esprit motard</a>
+            <a href="index.html#events">Sorties</a>
+            <a href="index.html#membership">Adhésion</a>
+            <a href="membres.html">Espace membres</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+          <a href="index.html#membership" class="nav-cta">Adhérer</a>
+        </nav>
+      </header>
 
-    <main>
-      <!-- Bandeau titre -->
-      <section class="members-hero">
-        <div class="section-header">
-          <div class="section-kicker">Zone réservée</div>
-          <h1 class="section-title">Espace membres</h1>
-        </div>
-        <p class="members-intro">
-          Cette page est destinée aux adhérents de l’association. Elle doit être protégée
-          (accès par identifiant/mot de passe ou lien sécurisé, à configurer sur l’hébergeur)
-          afin de préserver les données et les photos de chacun.
-        </p>
-      </section>
+      <main>
+        <!-- Bandeau titre -->
+        <section class="members-hero">
+          <div class="section-header">
+            <div class="section-kicker">Zone réservée</div>
+            <h1 class="section-title">Espace membres</h1>
+          </div>
+          <p class="members-intro">
+            Cette page est destinée aux adhérents de l’association. Elle doit
+            être protégée (accès par identifiant/mot de passe ou lien sécurisé,
+            à configurer sur l’hébergeur) afin de préserver les données et les
+            photos de chacun.
+          </p>
+        </section>
 
-      <!-- Formulaires membres -->
-      <section class="members-area">
-        <div class="members-grid">
-          <article class="members-block">
-            <h3>Boîte à idées</h3>
-            <p>
-              Proposez des balades, des événements caritatifs ou des améliorations
-              pour l’association. Vos messages sont reçus par le bureau.
-            </p>
-            <form class="simple-form">
-              <label for="idea">Votre idée</label>
-              <textarea id="idea" placeholder="Proposez une idée de sortie, d’événement, d’amélioration…"></textarea>
-              <button type="submit">Envoyer au bureau</button>
-            </form>
-          </article>
+        <!-- Formulaires membres -->
+        <section class="members-area">
+          <div class="members-grid">
+            <article class="members-block">
+              <h3>Boîte à idées</h3>
+              <p>
+                Proposez des balades, des événements caritatifs ou des
+                améliorations pour l’association. Vos messages sont reçus par le
+                bureau.
+              </p>
+              <form class="simple-form">
+                <label for="idea">Votre idée</label>
+                <textarea
+                  id="idea"
+                  placeholder="Proposez une idée de sortie, d’événement, d’amélioration…"
+                ></textarea>
+                <button type="submit">Envoyer au bureau</button>
+              </form>
+            </article>
 
-          <article class="members-block">
-            <h3>Avis sur les sorties</h3>
-            <p>
-              Donnez votre retour sur les sorties passées pour nous aider à améliorer
-              l’organisation et le rythme des balades.
-            </p>
-            <form class="simple-form">
-              <label for="event-select">Sortie concernée</label>
-              <select id="event-select">
-                <option>Choisir une sortie…</option>
-                <!-- options remplies côté serveur ou JS -->
-              </select>
-              <label for="feedback">Votre avis</label>
-              <textarea id="feedback" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
-              <button type="submit">Envoyer l’avis</button>
-            </form>
-          </article>
+            <article class="members-block">
+              <h3>Avis sur les sorties</h3>
+              <p>
+                Donnez votre retour sur les sorties passées pour nous aider à
+                améliorer l’organisation et le rythme des balades.
+              </p>
+              <form class="simple-form">
+                <label for="event-select">Sortie concernée</label>
+                <select id="event-select">
+                  <option>Choisir une sortie…</option>
+                  <!-- options remplies côté serveur ou JS -->
+                </select>
+                <label for="feedback">Votre avis</label>
+                <textarea
+                  id="feedback"
+                  placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"
+                ></textarea>
+                <button type="submit">Envoyer l’avis</button>
+              </form>
+            </article>
 
-          <article class="members-block">
-            <h3>Dépôt de photos</h3>
-            <p>
-              Ajoutez vos photos de balades. Elles seront publiées après validation
-              par le bureau et en respectant le droit à l’image (CNIL).
-            </p>
-            <form class="simple-form" enctype="multipart/form-data">
-              <label for="photo-upload">Sélectionner des photos</label>
-              <input id="photo-upload" type="file" multiple />
-              <button type="submit">Soumettre au bureau</button>
-            </form>
-          </article>
-        </div>
+            <article class="members-block">
+              <h3>Dépôt de photos</h3>
+              <p>
+                Ajoutez vos photos de balades. Elles seront publiées après
+                validation par le bureau et en respectant le droit à l’image
+                (CNIL).
+              </p>
+              <form class="simple-form" enctype="multipart/form-data">
+                <label for="photo-upload">Sélectionner des photos</label>
+                <input id="photo-upload" type="file" multiple />
+                <button type="submit">Soumettre au bureau</button>
+              </form>
+            </article>
+          </div>
 
-        <p class="members-note">
-          Remarque : la gestion réelle des formulaires (enregistrement, tri, validation, connexion)
-          devra être mise en place côté serveur (WordPress, hébergeur, ou développement sur mesure).
-        </p>
-      </section>
+          <p class="members-note">
+            Remarque : la gestion réelle des formulaires (enregistrement, tri,
+            validation, connexion) devra être mise en place côté serveur
+            (WordPress, hébergeur, ou développement sur mesure).
+          </p>
+        </section>
 
-      <section>Liste des sorties</section>
+        <section class="rides-list">
+          <div class="section-header">
+            <div class="section-kicker">Liste des sorties</div>
+            <h2 class="section-title">Carnet de route des Fêlés</h2>
+          </div>
 
-      <!-- Galerie privée -->
-      <section class="members-gallery">
-        <div class="section-header">
-          <div class="section-kicker">Galerie privée</div>
-          <h2 class="section-title">Photos réservées aux adhérents</h2>
-        </div>
+          <!-- Filtres (juste visuels pour l’instant) -->
+          <div class="rides-filters">
+            <button class="rides-filter rides-filter--active">Toutes</button>
+            <button class="rides-filter">À venir</button>
+            <button class="rides-filter">Passées</button>
+            <button class="rides-filter">Road trips</button>
+            <button class="rides-filter">Caritatif</button>
+          </div>
 
-        <div class="gallery-grid">
-          <div class="gallery-item placeholder-photo">Album balade 1</div>
-          <div class="gallery-item placeholder-photo">Album balade 2</div>
-          <div class="gallery-item placeholder-photo">Album caritatif</div>
-          <div class="gallery-item placeholder-photo">Album road trip</div>
-        </div>
+          <!-- Tableau des sorties -->
+          <div class="rides-table">
+            <div class="rides-header-row">
+              <span>Date</span>
+              <span>Sortie</span>
+              <span>Type</span>
+              <span>Niveau</span>
+              <span>Statut</span>
+              <span>Compte rendu</span>
+            </div>
 
-        <p class="members-note">
-          Ici pourront apparaître les albums photo accessibles uniquement aux membres connectés
-          (selon la protection mise en place sur le site).
-        </p>
-      </section>
-    </main>
+            <div class="rides-row">
+              <span>28/03/2026</span>
+              <span>Route des Crêtes – Vosges</span>
+              <span>Balade journée</span>
+              <span>Intermédiaire</span>
+              <span class="badge badge-open">Inscriptions ouvertes</span>
+              <span><a href="#">Voir</a></span>
+            </div>
 
-    <footer>
-      <span>© 2026 Asso Motards Les Fêlés du Bocal – Association loi 1901.</span>
-      <span>Mentions légales • Politique de confidentialité</span>
-    </footer>
-  </div>
-</body>
+            <div class="rides-row">
+              <span>10/04/2026</span>
+              <span>Ride by night</span>
+              <span>Soirée</span>
+              <span>Débutant +</span>
+              <span class="badge badge-planned">Prévue</span>
+              <span><a href="#">À venir</a></span>
+            </div>
+
+            <div class="rides-row">
+              <span>01–03/05/2026</span>
+              <span>Roadtrip Forêt Noire</span>
+              <span>Road trip</span>
+              <span>Confirmé</span>
+              <span class="badge badge-done">Terminé</span>
+              <span><a href="#">Compte rendu</a></span>
+            </div>
+          </div>
+
+          <p class="rides-note">
+            À terme, ces données pourront être alimentées automatiquement par
+            votre système d’inscriptions / comptes rendus. Les membres pourront
+            filtrer les sorties et accéder directement aux CR et aux galeries
+            photos.
+          </p>
+        </section>
+
+        <!-- Galerie privée -->
+        <section class="members-gallery">
+          <div class="section-header">
+            <div class="section-kicker">Galerie privée</div>
+            <h2 class="section-title">Photos réservées aux adhérents</h2>
+          </div>
+
+          <div class="gallery-grid">
+            <div class="gallery-item placeholder-photo">Album balade 1</div>
+            <div class="gallery-item placeholder-photo">Album balade 2</div>
+            <div class="gallery-item placeholder-photo">Album caritatif</div>
+            <div class="gallery-item placeholder-photo">Album road trip</div>
+          </div>
+
+          <p class="members-note">
+            Ici pourront apparaître les albums photo accessibles uniquement aux
+            membres connectés (selon la protection mise en place sur le site).
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        <span
+          >© 2026 Asso Motards Les Fêlés du Bocal – Association loi 1901.</span
+        >
+        <span>Mentions légales • Politique de confidentialité</span>
+      </footer>
+    </div>
+  </body>
 </html>
