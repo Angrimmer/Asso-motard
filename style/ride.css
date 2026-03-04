@@ -127,6 +127,38 @@
   object-fit: cover;
 }
 
+/* Lightbox photos */
+
+.ride-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none; /* masqué par défaut */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ride-lightbox--open {
+  display: flex;
+}
+
+.ride-lightbox-inner {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+#ride-lightbox-img {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-soft);
+}
+
+
 /* Responsive */
 
 @media (max-width: 960px) {

@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
           requestAnimationFrame(update);
         }
 
-        // 1) Compteur MEMBERS (données du site)
+        // 1) Compteur MEMBERS (données du site apparaissant dans la Page d’accueil)
         const membersEl = document.getElementById("members-counter");
         if (membersEl) {
           fetch("/api/membres/count") // URL à adapter selon ton hébergeur

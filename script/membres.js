@@ -127,20 +127,16 @@ function initRideButtons() {
       const ride = rides.find(r => r.id === id);
       if (!ride) return;
 
-      // Si le bouton est désactivé, on ne fait rien
       if (btn.classList.contains("ride-btn--disabled")) {
         alert("Le compte rendu ou les inscriptions ne sont pas encore disponibles pour cette sortie.");
         return;
       }
 
-      // Action selon le type
       if (ride.actionType === "register") {
-        // page d'inscription
         window.open(ride.actionUrl, "_blank");
       }
 
       if (ride.actionType === "report") {
-        // page compte rendu de type ride.html?id=...
         window.location.href = ride.actionUrl;
       }
     });
@@ -155,85 +151,135 @@ function initRideFilters() {
     btn.addEventListener("click", () => {
       const filter = btn.dataset.filter || "all";
 
-      // état visuel
       filterButtons.forEach(b => b.classList.remove("rides-filter--active"));
       btn.classList.add("rides-filter--active");
 
-      // re-générer le tableau avec le bon filtre
       renderRidesTable(filter);
     });
   });
 
-  // affichage initial
   renderRidesTable("all");
 }
 
+/* --- GALERIES EN BAS DE PAGE --- */
 
-function initRidePage() {
-  if (!document.body.classList.contains("ride-page")) {
+function renderMembersGalleries(filter) {
+  const grid = document.getElementById("members-gallery-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  const albums = [];
+  for (let i = 0; i < rides.length; i++) {
+    const ride = rides[i];
+    if (!ride.gallery || ride.gallery.length === 0) continue;
+
+    let keep = true;
+    if (filter === "balade" && ride.category !== "balade") keep = false;
+    if (filter === "roadtrip" && ride.category !== "roadtrip") keep = false;
+    if (filter === "caritatif" && ride.category !== "caritatif") keep = false;
+
+    if (keep) albums.push(ride);
+  }
+
+  if (albums.length === 0) {
+    const p = document.createElement("p");
+    p.style.fontSize = "0.85rem";
+    p.style.color = "var(--text-muted)";
+    p.textContent = "Aucune galerie ne correspond encore à ce filtre.";
+    grid.appendChild(p);
     return;
   }
 
-  const params = new URLSearchParams(window.location.search);
-  const idParam = params.get("id");
-  const id = idParam ? parseInt(idParam, 10) : NaN;
+  for (let i = 0; i < albums.length; i++) {
+    const ride = albums[i];
+    const card = document.createElement("article");
+    card.className = "members-gallery-card";
 
-  const titleEl = document.getElementById("ride-title");
-  const metaEl = document.getElementById("ride-meta");
-  const dateEl = document.getElementById("ride-date");
-  const typeEl = document.getElementById("ride-type");
-  const levelEl = document.getElementById("ride-level");
-  const statusEl = document.getElementById("ride-status");
-  const descEl = document.getElementById("ride-description");
-  const galleryEl = document.getElementById("ride-gallery");
+    const hasPhotos = Array.isArray(ride.gallery) && ride.gallery.length > 0;
+    const coverUrl = hasPhotos
+      ? ride.gallery[0]
+      : "https://via.placeholder.com/400x250?text=Aucune+photo";
 
-  if (!idParam || isNaN(id)) {
-    if (titleEl) titleEl.textContent = "Sortie introuvable";
-    if (descEl) descEl.textContent = "Aucune sortie n’est associée à cet identifiant.";
-    return;
+    const btnLabel = hasPhotos ? "Voir la galerie" : "Pas encore de photos";
+    const btnClasses = hasPhotos
+      ? "members-gallery-btn"
+      : "members-gallery-btn members-gallery-btn--disabled";
+
+    card.innerHTML =
+      '<div class="members-gallery-cover">' +
+        '<img src="' + coverUrl + '" alt="Photo de la sortie" />' +
+      "</div>" +
+      '<div class="members-gallery-body">' +
+        '<div class="members-gallery-title">' + ride.title + "</div>" +
+        '<div class="members-gallery-meta">' + ride.date + " • " + ride.type + "</div>" +
+      "</div>" +
+      '<div class="members-gallery-actions">' +
+        '<button class="' + btnClasses + '" data-gallery-id="' + ride.id + '">' +
+          btnLabel +
+        "</button>" +
+      "</div>";
+
+    grid.appendChild(card);
   }
 
-  const ride = rides.find(r => r.id === id);
-  if (!ride) {
-    if (titleEl) titleEl.textContent = "Sortie introuvable";
-    if (descEl) descEl.textContent = "Aucune sortie n’est associée à cet identifiant.";
-    return;
+  initMembersGalleryButtons();
+}
+
+function initMembersGalleryButtons() {
+  const buttons = document.querySelectorAll(".members-gallery-btn");
+  if (!buttons.length) return;
+
+  for (let i = 0; i < buttons.length; i++) {
+    const btn = buttons[i];
+    btn.addEventListener("click", function () {
+      const id = parseInt(btn.dataset.galleryId, 10);
+      const ride = rides.find(r => r.id === id);
+      if (!ride) return;
+
+      const hasPhotos = Array.isArray(ride.gallery) && ride.gallery.length > 0;
+
+      if (!hasPhotos || btn.classList.contains("members-gallery-btn--disabled")) {
+        alert("Aucune photo n’a encore été ajoutée pour cette sortie.");
+        return;
+      }
+
+      const url = "ride.html?id=" + ride.id;
+      window.location.href = url;
+    });
   }
+}
 
-  // Remplissage
-  if (titleEl) titleEl.textContent = ride.title;
-  if (metaEl)  metaEl.textContent  = ride.meta || "";
-  if (dateEl)  dateEl.textContent  = ride.date;
-  if (typeEl)  typeEl.textContent  = ride.type;
-  if (levelEl) levelEl.textContent = ride.level;
-  if (statusEl) statusEl.textContent = ride.statusLabel;
+function initMembersGalleryFilters() {
+  const filterButtons = document.querySelectorAll(".gallery-filter");
+  if (!filterButtons.length) return;
 
-  if (descEl && Array.isArray(ride.description)) {
-    descEl.innerHTML = ride.description
-      .map(p => "<p>" + p + "</p>")
-      .join("");
-  }
+  function setGalleryFilter(filter) {
+    for (let i = 0; i < filterButtons.length; i++) {
+      const btn = filterButtons[i];
+      const btnFilter = btn.dataset.galleryFilter || "all";
 
-  if (galleryEl) {
-    galleryEl.innerHTML = "";
-    if (Array.isArray(ride.gallery) && ride.gallery.length > 0) {
-      ride.gallery.forEach(url => {
-        const item = document.createElement("div");
-        item.className = "ride-gallery-item";
-        item.innerHTML = '<img src="' + url + '" alt="Photo de la sortie" />';
-        galleryEl.appendChild(item);
-      });
-    } else {
-      const placeholder = document.createElement("p");
-      placeholder.style.fontSize = "0.85rem";
-      placeholder.style.color = "var(--text-muted)";
-      placeholder.textContent = "Pas encore de photos pour cette sortie.";
-      galleryEl.appendChild(placeholder);
+      if (btnFilter === filter) {
+        btn.classList.add("gallery-filter--active");
+      } else {
+        btn.classList.remove("gallery-filter--active");
+      }
     }
+    renderMembersGalleries(filter);
   }
+
+  for (let i = 0; i < filterButtons.length; i++) {
+    const btn = filterButtons[i];
+    btn.addEventListener("click", function () {
+      const filter = btn.dataset.galleryFilter || "all";
+      setGalleryFilter(filter);
+    });
+  }
+
+  setGalleryFilter("all");
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   initRideFilters();
-  initRidePage();
+  initMembersGalleryFilters();
 });

@@ -119,11 +119,17 @@
 
           <!-- Filtres -->
           <div class="rides-filters">
-            <button class="rides-filter rides-filter--active" data-filter="all">Toutes</button>
+            <button class="rides-filter rides-filter--active" data-filter="all">
+              Toutes
+            </button>
             <button class="rides-filter" data-filter="upcoming">À venir</button>
             <button class="rides-filter" data-filter="past">Passées</button>
-            <button class="rides-filter" data-filter="roadtrip">Road trips</button>
-            <button class="rides-filter" data-filter="caritatif">Caritatif</button>
+            <button class="rides-filter" data-filter="roadtrip">
+              Road trips
+            </button>
+            <button class="rides-filter" data-filter="caritatif">
+              Caritatif
+            </button>
           </div>
 
           <!-- Tableau des sorties -->
@@ -150,23 +156,22 @@
         </section>
 
         <!-- Galerie privée -->
-        <section class="members-gallery">
+        <section class="members-gallery-list">
           <div class="section-header">
-            <div class="section-kicker">Galerie privée</div>
-            <h2 class="section-title">Photos réservées aux adhérents</h2>
+            <div class="section-kicker">Galeries</div>
+            <h2 class="section-title">Albums photo des sorties</h2>
           </div>
 
-          <div class="gallery-grid">
-            <div class="gallery-item placeholder-photo">Album balade 1</div>
-            <div class="gallery-item placeholder-photo">Album balade 2</div>
-            <div class="gallery-item placeholder-photo">Album caritatif</div>
-            <div class="gallery-item placeholder-photo">Album road trip</div>
+          <div class="gallery-filters">
+            <button class="gallery-filter gallery-filter--active" data-gallery-filter="all">Toutes</button>
+            <button class="gallery-filter" data-gallery-filter="balade">Balades</button>
+            <button class="gallery-filter" data-gallery-filter="roadtrip">Road trips</button>
+            <button class="gallery-filter" data-gallery-filter="caritatif">Caritatif</button>
           </div>
 
-          <p class="members-note">
-            Ici pourront apparaître les albums photo accessibles uniquement aux
-            membres connectés (selon la protection mise en place sur le site).
-          </p>
+          <div class="members-gallery-grid" id="members-gallery-grid">
+            <!-- Rempli en JS -->
+          </div>
         </section>
       </main>
 
