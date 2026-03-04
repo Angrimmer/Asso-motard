@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Compte rendu de sortie – Les Fêlés du Bocal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/ride.css" />
+  <script src="script/membres.js" defer></script>
+</head>
+<body class="ride-page">
+  <div class="page">
+    <!-- HEADER identique -->
+    <header>
+      <nav class="nav">
+        <div class="logo">
+          <div class="logo-placeholder">LOGO</div>
+          <span>Les Fêlés du Bocal</span>
+        </div>
+        <div class="nav-links">
+          <a href="index.html#home">Accueil</a>
+          <a href="index.html#values">Esprit motard</a>
+          <a href="index.html#events">Sorties</a>
+          <a href="index.html#membership">Adhésion</a>
+          <a href="membres.html">Espace membres</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <a href="login.html" class="nav-cta">Connexion</a>
+      </nav>
+    </header>
+
+    <main class="ride-main">
+      <section class="ride-hero">
+        <p class="ride-kicker">Compte rendu de sortie</p>
+        <!-- Titre et info remplis par JS -->
+        <h1 class="ride-title" id="ride-title">Titre de la sortie</h1>
+        <p class="ride-meta" id="ride-meta">
+          <!-- Exemple : 01–03/05/2026 • Road trip • Confirmé -->
+        </p>
+      </section>
+
+      <section class="ride-content-wrapper">
+        <article class="ride-content">
+          <!-- Texte du CR injecté ici -->
+          <p id="ride-description">
+            Chargement du compte rendu…
+          </p>
+        </article>
+
+        <aside class="ride-sidebar">
+          <div class="ride-info-card">
+            <h2>Infos pratiques</h2>
+            <ul>
+              <li><strong>Date :</strong> <span id="ride-date">–</span></li>
+              <li><strong>Type :</strong> <span id="ride-type">–</span></li>
+              <li><strong>Niveau :</strong> <span id="ride-level">–</span></li>
+              <li><strong>Statut :</strong> <span id="ride-status">–</span></li>
+            </ul>
+          </div>
+
+          <div class="ride-back">
+            <a href="membres.html">&larr; Retour à la liste des sorties</a>
+          </div>
+        </aside>
+      </section>
+
+      <section class="ride-gallery">
+        <h2>Galerie photos</h2>
+        <div class="ride-gallery-grid" id="ride-gallery">
+          <!-- vignettes / placeholders injectés par JS -->
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© 2026 Asso Motards Les Fêlés du Bocal – Association loi 1901.</span>
+      <span>Mentions légales • Politique de confidentialité</span>
+    </footer>
+  </div>
+</body>
+</html>

@@ -10,7 +10,7 @@ const rides = [
     statusLabel: "Inscriptions ouvertes",
     actionType: "register",
     actionLabel: "S'inscrire",
-    actionUrl: "#"
+    actionUrl: "ride.html?id=1"
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const rides = [
     statusLabel: "Prévue",
     actionType: "disabled",
     actionLabel: "À venir",
-    actionUrl: "#"
+    actionUrl: "ride.html?id=2"
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const rides = [
     statusLabel: "Terminé",
     actionType: "report",
     actionLabel: "Compte rendu",
-    actionUrl: "#"
+    actionUrl: "ride.html?id=3"
   }
 ];
 
@@ -84,6 +84,37 @@ function renderRidesTable(filter = "all") {
   });
 
   initRideButtons();
+}
+
+function initRideButtons() {
+  const buttons = document.querySelectorAll(".ride-btn");
+
+  for (let i = 0; i < buttons.length; i++) {
+    const btn = buttons[i];
+
+    btn.addEventListener("click", function () {
+      const id = parseInt(btn.dataset.rideId, 10);
+      const ride = rides.find(r => r.id === id);
+      if (!ride) return;
+
+      // Si le bouton est désactivé, on ne fait rien
+      if (btn.classList.contains("ride-btn--disabled")) {
+        alert("Le compte rendu ou les inscriptions ne sont pas encore disponibles pour cette sortie.");
+        return;
+      }
+
+      // Action selon le type
+      if (ride.actionType === "register") {
+        // page d'inscription
+        window.open(ride.actionUrl, "_blank");
+      }
+
+      if (ride.actionType === "report") {
+        // page compte rendu de type ride.html?id=...
+        window.location.href = ride.actionUrl;
+      }
+    });
+  }
 }
 
 function initRideFilters() {
