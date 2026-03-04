@@ -3,10 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <title>Espace membres – Les Fêlés du Bocal</title>
+    <meta
+      name="description"
+      content="Espace réservé aux adhérents de l’association Les Fêlés du Bocal, avec boîte à idées, avis sur les sorties, dépôt de photos, liste des sorties passées et à venir, et galerie privée."
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/style/style.css" />
     <link rel="stylesheet" href="/style/membres.css" />
+    <script src="/script/membres.js" defer></script>
   </head>
   <body>
     <div class="page">
@@ -113,13 +118,13 @@
             <h2 class="section-title">Carnet de route des Fêlés</h2>
           </div>
 
-          <!-- Filtres (juste visuels pour l’instant) -->
+          <!-- Filtres -->
           <div class="rides-filters">
-            <button class="rides-filter rides-filter--active">Toutes</button>
-            <button class="rides-filter">À venir</button>
-            <button class="rides-filter">Passées</button>
-            <button class="rides-filter">Road trips</button>
-            <button class="rides-filter">Caritatif</button>
+            <button class="rides-filter rides-filter--active" data-filter="all">Toutes</button>
+            <button class="rides-filter" data-filter="upcoming">À venir</button>
+            <button class="rides-filter" data-filter="past">Passées</button>
+            <button class="rides-filter" data-filter="roadtrip">Road trips</button>
+            <button class="rides-filter" data-filter="caritatif">Caritatif</button>
           </div>
 
           <!-- Tableau des sorties -->
@@ -133,32 +138,8 @@
               <span>Compte rendu</span>
             </div>
 
-            <div class="rides-row">
-              <span>28/03/2026</span>
-              <span>Route des Crêtes – Vosges</span>
-              <span>Balade journée</span>
-              <span>Intermédiaire</span>
-              <span class="badge badge-open">Inscriptions ouvertes</span>
-              <span><a href="#">Voir</a></span>
-            </div>
-
-            <div class="rides-row">
-              <span>10/04/2026</span>
-              <span>Ride by night</span>
-              <span>Soirée</span>
-              <span>Débutant +</span>
-              <span class="badge badge-planned">Prévue</span>
-              <span><a href="#">À venir</a></span>
-            </div>
-
-            <div class="rides-row">
-              <span>01–03/05/2026</span>
-              <span>Roadtrip Forêt Noire</span>
-              <span>Road trip</span>
-              <span>Confirmé</span>
-              <span class="badge badge-done">Terminé</span>
-              <span><a href="#">Compte rendu</a></span>
-            </div>
+            <!-- les lignes seront injectées ici par JS -->
+            <div id="rides-body"></div>
           </div>
 
           <p class="rides-note">
