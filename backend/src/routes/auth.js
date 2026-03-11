@@ -5,7 +5,9 @@ const db = require("../db");
 
 const router = express.Router();
 
+// ─────────────────────────────────────────
 // POST /api/auth/login
+// ─────────────────────────────────────────
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -24,13 +26,12 @@ router.post("/login", async (req, res) => {
     }
 
     const user = rows[0];
-
     const ok = await bcrypt.compare(password, user.password_hash);
+
     if (!ok) {
       return res.status(401).json({ error: "Identifiants incorrects." });
     }
 
-    // Générer le token JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -55,7 +56,82 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────
+// GET /api/auth/verify-token?token=XXXX
+// Vérifie que le token d'activation est valide
+// ─────────────────────────────────────────
+router.get("/verify-token", async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ error: "Token manquant." });
+  }
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id, display_name, email FROM users WHERE activation_token = ? AND token_expires_at > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ error: "Token invalide ou expiré." });
+    }
+
+    res.json({ valid: true, user: rows[0] });
+
+  } catch (err) {
+    console.error("Erreur /verify-token :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// POST /api/auth/set-password
+// Active le compte via le token + définit le mot de passe
+// ─────────────────────────────────────────
+router.post("/set-password", async (req, res) => {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+    return res.status(400).json({ error: "Token et mot de passe requis." });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ error: "Le mot de passe doit faire au moins 8 caractères." });
+  }
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id FROM users WHERE activation_token = ? AND token_expires_at > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ error: "Token invalide ou expiré." });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+
+    await db.query(
+      `UPDATE users 
+       SET password_hash = ?, is_active = 1, must_change_password = 0,
+           activation_token = NULL, token_expires_at = NULL
+       WHERE id = ?`,
+      [hash, rows[0].id]
+    );
+
+    res.json({ message: "Compte activé ! Vous pouvez maintenant vous connecter." });
+
+  } catch (err) {
+    console.error("Erreur /set-password :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
 // POST /api/auth/change-password
+// Utilisateur connecté qui change son mot de passe
+// ─────────────────────────────────────────
 router.post("/change-password", async (req, res) => {
   const { user_id, old_password, new_password } = req.body;
 
@@ -78,8 +154,8 @@ router.post("/change-password", async (req, res) => {
     }
 
     const user = rows[0];
-
     const ok = await bcrypt.compare(old_password, user.password_hash);
+
     if (!ok) {
       return res.status(401).json({ error: "Ancien mot de passe incorrect." });
     }
