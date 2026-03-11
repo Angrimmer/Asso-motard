@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/style/membres.css" />
     <script src="/script/membres.js" defer></script>
   </head>
+
   <body>
     <div class="page">
       <!-- HEADER identique -->
@@ -28,8 +29,8 @@
             <a href="membres.html">Espace membres</a>
             <a href="index.html#contact">Contact</a>
           </div>
-          <a href="index.html#membership" class="nav-cta">Adhérer</a>
-        </nav>
+             <button id="logout-btn" class="nav-cta">Se déconnecter</button>
+          </nav>
       </header>
 
       <main>
@@ -46,69 +47,93 @@
             photos de chacun.
           </p>
         </section>
-
-        <!-- Formulaires membres -->
+        
         <section class="members-area">
-          <div class="members-grid">
-            <article class="members-block">
-              <h3>Boîte à idées</h3>
-              <p>
-                Proposez des balades, des événements caritatifs ou des
-                améliorations pour l’association. Vos messages sont reçus par le
-                bureau.
-              </p>
-              <form class="simple-form">
-                <label for="idea">Votre idée</label>
-                <textarea
-                  id="idea"
-                  placeholder="Proposez une idée de sortie, d’événement, d’amélioration…"
-                ></textarea>
-                <button type="submit">Envoyer au bureau</button>
-              </form>
-            </article>
 
-            <article class="members-block">
-              <h3>Avis sur les sorties</h3>
-              <p>
-                Donnez votre retour sur les sorties passées pour nous aider à
-                améliorer l’organisation et le rythme des balades.
-              </p>
-              <form class="simple-form">
-                <label for="event-select">Sortie concernée</label>
-                <select id="event-select">
-                  <option>Choisir une sortie…</option>
-                  <!-- options remplies côté serveur ou JS -->
-                </select>
-                <label for="feedback">Votre avis</label>
-                <textarea
-                  id="feedback"
-                  placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"
-                ></textarea>
-                <button type="submit">Envoyer l’avis</button>
-              </form>
-            </article>
+            <!-- BLOC MEMBRES NORMAUX — caché pour admin -->
+            <div id="member-blocks" class="members-grid">
+              <article class="members-block">
+                <h3>Boîte à idées</h3>
+                <p>Proposez des balades, des événements caritatifs ou des améliorations pour l'association.</p>
+                <form class="simple-form">
+                  <label for="idea">Votre idée</label>
+                  <textarea id="idea" placeholder="Proposez une idée de sortie, d'événement, d'amélioration…"></textarea>
+                  <button type="submit">Envoyer au bureau</button>
+                </form>
+              </article>
 
-            <article class="members-block">
-              <h3>Dépôt de photos</h3>
-              <p>
-                Ajoutez vos photos de balades. Elles seront publiées après
-                validation par le bureau et en respectant le droit à l’image
-                (CNIL).
-              </p>
-              <form class="simple-form" enctype="multipart/form-data">
-                <label for="photo-upload">Sélectionner des photos</label>
-                <input id="photo-upload" type="file" multiple />
-                <button type="submit">Soumettre au bureau</button>
-              </form>
-            </article>
-          </div>
+              <article class="members-block">
+                <h3>Avis sur les sorties</h3>
+                <p>Donnez votre retour sur les sorties passées.</p>
+                <form class="simple-form">
+                  <label for="event-select">Sortie concernée</label>
+                  <select id="event-select">
+                    <option>Choisir une sortie…</option>
+                  </select>
+                  <label for="feedback">Votre avis</label>
+                  <textarea id="feedback" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
+                  <button type="submit">Envoyer l'avis</button>
+                </form>
+              </article>
 
-          <p class="members-note">
-            Remarque : la gestion réelle des formulaires (enregistrement, tri,
-            validation, connexion) devra être mise en place côté serveur
-            (WordPress, hébergeur, ou développement sur mesure).
-          </p>
-        </section>
+              <article class="members-block">
+                <h3>Dépôt de photos</h3>
+                <p>
+                  Ajoutez vos photos de balades. Elles seront publiées après
+                  validation par le bureau et en respectant le droit à l'image (CNIL).
+                </p>
+                <form class="simple-form" enctype="multipart/form-data">
+                  <label for="photo-upload">Sélectionner des photos</label>
+                  <input id="photo-upload" type="file" multiple />
+                  <button type="submit">Soumettre au bureau</button>
+                </form>
+              </article>
+            </div>
+
+            <!-- BLOC ADMIN — caché par défaut -->
+            <div id="admin-block" class="members-grid" style="display:none;">
+              <article class="members-block">
+                <h3>🛡️ Créer un compte membre</h3>
+                <p>Renseignez les informations du nouveau membre. Un email d'activation lui sera envoyé automatiquement.</p>
+                <form class="simple-form" id="create-user-form">
+                  <label for="new-email">Email</label>
+                  <input type="email" id="new-email" placeholder="membre@exemple.com" required />
+
+                  <label for="new-name">Nom affiché</label>
+                  <input type="text" id="new-name" placeholder="Prénom Nom" required />
+
+                  <label for="new-role">Rôle</label>
+                  <select id="new-role">
+                    <option value="member">Membre</option>
+                    <option value="bureau">Bureau</option>
+                    <option value="admin">Admin</option>
+                  </select>
+
+                  <p id="create-user-msg" style="display:none; margin-top:10px;"></p>
+                  <button type="submit">Envoyer l'invitation</button>
+                </form>
+              </article>
+              <article class="members-block">
+                <h3>Dépôt de photos</h3>
+                <p>
+                  Ajoutez vos photos de balades. Elles seront publiées après
+                  validation par le bureau et en respectant le droit à l'image (CNIL).
+                </p>
+                <form class="simple-form" enctype="multipart/form-data">
+                  <label for="photo-upload">Sélectionner des photos</label>
+                  <input id="photo-upload" type="file" multiple />
+                  <button type="submit">Soumettre au bureau</button>
+                </form>
+              </article>
+            </div>
+
+            <p class="members-note">
+              Remarque : la gestion réelle des formulaires (enregistrement, tri,
+              validation, connexion) devra être mise en place côté serveur.
+            </p>
+
+          </section>
+
 
         <section class="rides-list">
           <div class="section-header">

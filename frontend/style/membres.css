@@ -1,3 +1,4 @@
+/* Tableau de sorties */
 
 .rides-list {
   background: #050d1b;
@@ -30,8 +31,6 @@
   color: var(--accent);
   background: rgba(255, 180, 0, 0.08);
 }
-
-/* Tableau de sorties */
 
 .rides-table {
   margin-top: 1rem;
@@ -100,6 +99,37 @@
   color: var(--text-muted);
 }
 
+/* Boutons du tableau */
+
+.ride-btn {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.ride-btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+.ride-btn--primary:hover {
+  filter: brightness(1.05);
+}
+
+.ride-btn--disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Blocs membres */
+
 .members-block {
   background: rgba(5, 18, 34, 0.95);
   border-radius: 12px;
@@ -127,7 +157,9 @@
 
 .simple-form textarea,
 .simple-form select,
-.simple-form input[type="file"] {
+.simple-form input[type="file"],
+.simple-form input[type="email"],
+.simple-form input[type="text"] {
   width: 100%;
   padding: 0.5rem 0.6rem;
   border-radius: 8px;
@@ -158,6 +190,8 @@
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+/* Galeries */
 
 .members-gallery-list {
   background: #050d1b;
@@ -255,28 +289,18 @@
   filter: brightness(1.05);
 }
 
-/* Responsive */
-@media (max-width: 960px) {
-  .members-gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 700px) {
-  .members-gallery-list {
-    padding: 2rem 1.7rem 2.5rem;
-  }
-  .members-gallery-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .members-gallery-btn--disabled {
   opacity: 0.5;
   cursor: default;
 }
 
-/* responsive */
+/* Responsive */
+
+@media (max-width: 960px) {
+  .members-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 @media (max-width: 900px) {
   .rides-header-row {
@@ -302,5 +326,15 @@
     letter-spacing: 0.12em;
     font-size: 0.65rem;
     color: var(--text-muted);
+  }
+}
+
+@media (max-width: 700px) {
+  .members-gallery-list {
+    padding: 2rem 1.7rem 2.5rem;
+  }
+
+  .members-gallery-grid {
+    grid-template-columns: 1fr;
   }
 }
