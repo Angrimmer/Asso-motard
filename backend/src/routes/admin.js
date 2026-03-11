@@ -1,7 +1,8 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
+const crypto = require("crypto");           //← NOUVEAU (natif Node, pas besoin d'install)
 const db = require("../db");
 const authMiddleware = require("../middlewares/auth.middleware");
+const { sendActivationEmail } = require("../mailer"); // ← NOUVEAU (à créer juste après)
 
 const router = express.Router();
 
@@ -13,15 +14,16 @@ function adminOnly(req, res, next) {
   next();
 }
 
-// POST /api/admin/create-user → créer un membre avec mot de passe temporaire
+// POST /api/admin/create-user → créer un membre + envoyer email d'activation
 router.post("/create-user", authMiddleware, adminOnly, async (req, res) => {
-  const { email, display_name, role, temp_password } = req.body;
+  const { email, display_name, role } = req.body; // ← plus de temp_password
 
-  if (!email || !display_name || !temp_password) {
-    return res.status(400).json({ error: "Email, nom et mot de passe temporaire requis." });
+  if (!email || !display_name) {
+    return res.status(400).json({ error: "Email et nom requis." });
   }
 
   try {
+    // Vérifier si l'email existe déjà
     const [existing] = await db.query(
       "SELECT id FROM users WHERE email = ?",
       [email]
@@ -30,14 +32,22 @@ router.post("/create-user", authMiddleware, adminOnly, async (req, res) => {
       return res.status(409).json({ error: "Cet email est déjà utilisé." });
     }
 
-    const hash = await bcrypt.hash(temp_password, 10);
+    // Générer un token unique + expiration dans 48h
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
 
+    // Insérer le compte (inactif, sans mot de passe)
     await db.query(
-      "INSERT INTO users (email, password_hash, display_name, role, must_change_password, is_active) VALUES (?, ?, ?, ?, 1, 1)",
-      [email, hash, display_name, role || "member"]
+      `INSERT INTO users 
+        (email, password_hash, display_name, role, must_change_password, is_active, activation_token, token_expires_at) 
+       VALUES (?, '', ?, ?, 1, 0, ?, ?)`,
+      [email, display_name, role || "member", token, expires]
     );
 
-    res.status(201).json({ message: "Compte créé avec succès. Le membre doit changer son mot de passe à la première connexion." });
+    // Envoyer l'email d'activation
+    await sendActivationEmail(email, display_name, token);
+
+    res.status(201).json({ message: "Compte créé. Un email d'activation a été envoyé au membre." });
 
   } catch (err) {
     console.error("Erreur /create-user :", err);
