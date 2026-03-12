@@ -89,4 +89,34 @@ router.get("/all-rides", authMiddleware, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────
+// GET /api/member/ride/:id
+// Détail d'une sortie + ses photos
+// ─────────────────────────────────────────
+router.get("/ride/:id", authMiddleware, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    const [[ride]] = await db.query(
+      "SELECT id, title, start_date, end_date, type, level, status, short_description, full_description FROM rides WHERE id = ?",
+      [id]
+    );
+
+    if (!ride) return res.status(404).json({ error: "Sortie introuvable." });
+
+    const [photos] = await db.query(
+      "SELECT url, caption FROM ride_photos WHERE ride_id = ? AND is_approved = 1 ORDER BY taken_at ASC",
+      [id]
+    );
+
+    ride.photos = photos;
+    res.json(ride);
+  } catch (err) {
+    console.error("Erreur /ride/:id :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+
 module.exports = router;
