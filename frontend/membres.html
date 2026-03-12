@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="fr">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Espace membres – Les Fêlés du Bocal</title>
     <meta
       name="description"
       content="Espace réservé aux adhérents de l’association Les Fêlés du Bocal, avec boîte à idées, avis sur les sorties, dépôt de photos, liste des sorties passées et à venir, et galerie privée."/>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="/style/style.css" />
-    <link rel="stylesheet" href="/style/membres.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="stylesheet" href="/style/style.css"/>
+    <link rel="stylesheet" href="/style/membres.css"/>
     <script src="/script/membres.js" defer></script>
   </head>
 
@@ -55,9 +55,12 @@
               <article class="members-block">
                 <h3>Boîte à idées</h3>
                 <p>Proposez des balades, des événements caritatifs ou des améliorations pour l'association.</p>
-                <form class="simple-form">
-                  <label for="idea">Votre idée</label>
-                  <textarea id="idea" placeholder="Proposez une idée de sortie, d'événement, d'amélioration…"></textarea>
+                <form class="simple-form" id="idea-form">
+                  <label for="idea-title">Titre de l'idée</label>
+                  <input type="text" id="idea-title" placeholder="Titre de votre idée"/>
+
+                  <label for="idea-content">Votre idée</label>
+                  <textarea id="idea-content" placeholder="Proposez une idée de sortie, d'événement, d'amélioration…"></textarea>
                   <button type="submit">Envoyer au bureau</button>
                 </form>
               </article>
@@ -70,6 +73,17 @@
                   <select id="event-select">
                     <option>Choisir une sortie…</option>
                   </select>
+
+                     <label for="feedback-rating">Note</label>
+                     <select id="feedback-rating" required>
+                       <option value="">-- Note --</option>
+                       <option value="1">1 – Décevant</option>
+                       <option value="2">2 – Passable</option>
+                       <option value="3">3 – Bien</option>
+                       <option value="4">4 – Très bien</option>
+                       <option value="5">5 – Excellent</option>
+                     </select>
+                     
                   <label for="feedback">Votre avis</label>
                   <textarea id="feedback" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
                   <button type="submit">Envoyer l'avis</button>
