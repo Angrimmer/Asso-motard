@@ -62,13 +62,14 @@
                   <label for="idea-content">Votre idée</label>
                   <textarea id="idea-content" placeholder="Proposez une idée de sortie, d'événement, d'amélioration…"></textarea>
                   <button type="submit">Envoyer au bureau</button>
+                  <p id="idea-msg" style="display:none; margin-top: 0.5rem;"></p>
                 </form>
               </article>
 
               <article class="members-block">
                 <h3>Avis sur les sorties</h3>
                 <p>Donnez votre retour sur les sorties passées.</p>
-                <form class="simple-form">
+                <form class="simple-form" id="feedback-form">
                   <label for="event-select">Sortie concernée</label>
                   <select id="event-select">
                     <option>Choisir une sortie…</option>
@@ -84,9 +85,10 @@
                        <option value="5">5 – Excellent</option>
                      </select>
                      
-                  <label for="feedback">Votre avis</label>
-                  <textarea id="feedback" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
+                  <label for="feedback-comment">Votre avis</label>
+                  <textarea id="feedback-comment" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
                   <button type="submit">Envoyer l'avis</button>
+                  <p id="feedback-msg" style="display:none; margin-top: 0.5rem;"></p>
                 </form>
               </article>
 

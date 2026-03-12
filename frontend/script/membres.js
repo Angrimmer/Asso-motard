@@ -28,134 +28,111 @@ const API = "http://localhost:4000";
 })();
 
 // ─────────────────────────────────────────
-// DONNÉES DES SORTIES (statiques pour l'instant)
+// TABLEAU DES SORTIES (dynamique BDD)
 // ─────────────────────────────────────────
-const rides = [
-  {
-    id: 1,
-    date: "28/03/2026",
-    title: "Route des Crêtes – Vosges",
-    type: "Balade journée",
-    level: "Intermédiaire",
-    status: "upcoming",
-    category: "balade",
-    statusLabel: "Inscriptions ouvertes",
-    actionType: "register",
-    actionLabel: "S'inscrire",
-    actionUrl: "ride.html?id=1",
-    meta: "28/03/2026 • Balade journée • Intermédiaire",
-    description: [
-      "Belle boucle sur la Route des Crêtes avec vue sur les vallées vosgiennes, accessible à tout niveau.",
-      "Rendez-vous à 8h30 pour le briefing sécurité, départ à 9h, pauses régulières et retour en fin d'après-midi par les petites routes."
-    ],
-    gallery: [
-      "https://images.pexels.com/photos/2101187/pexels-photo-2101187.jpeg"
-    ]
-  },
-  {
-    id: 2,
-    date: "10/04/2026",
-    title: "Ride by night",
-    type: "Soirée",
-    level: "Débutant +",
-    status: "upcoming",
-    category: "balade",
-    statusLabel: "Prévue",
-    actionType: "disabled",
-    actionLabel: "À venir",
-    actionUrl: "ride.html?id=2",
-    meta: "10/04/2026 • Soirée • Débutant +",
-    description: [
-      "Sortie nocturne autour de la vallée, rythme adapté aux débutants avec pauses régulières.",
-      "Dîner sur place puis retour groupé, idéal pour découvrir la conduite de nuit en sécurité."
-    ],
-    gallery: []
-  },
-  {
-    id: 3,
-    date: "01–03/05/2026",
-    title: "Roadtrip Forêt Noire",
-    type: "Road trip",
-    level: "Confirmé",
-    status: "past",
-    category: "roadtrip",
-    statusLabel: "Terminé",
-    actionType: "report",
-    actionLabel: "Compte rendu",
-    actionUrl: "ride.html?id=3",
-    meta: "01–03/05/2026 • Road trip • Confirmé",
-    description: [
-      "Trois jours de virages en Forêt Noire, avec hébergement en gîte et répartition par groupes de niveau.",
-      "Premier jour sur les petites routes sinueuses, deuxième jour plus roulant, troisième jour retour tranquille avec de nombreuses pauses photos."
-    ],
-    gallery: [
-      "https://images.pexels.com/photos/3803855/pexels-photo-3803855.jpeg"
-    ]
-  }
-];
+let allRides = [];
 
-// ─────────────────────────────────────────
-// TABLEAU DES SORTIES
-// ─────────────────────────────────────────
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("fr-FR");
+}
+
+function getRideDisplay(ride) {
+  const statusMap = {
+    upcoming: { label: "Inscriptions ouvertes", badgeClass: "badge badge-open", actionType: "register", actionLabel: "S'inscrire" },
+    planned:  { label: "Prévue",               badgeClass: "badge badge-open", actionType: "disabled", actionLabel: "À venir" },
+    past:     { label: "Terminé",              badgeClass: "badge badge-done", actionType: "report",   actionLabel: "Compte rendu" }
+  };
+  return statusMap[ride.status] || { label: ride.status, badgeClass: "", actionType: "disabled", actionLabel: "–" };
+}
+
 function renderRidesTable(filter = "all") {
   const container = document.getElementById("rides-body");
   if (!container) return;
   container.innerHTML = "";
-  const filtered = rides.filter(ride => {
+
+  const filtered = allRides.filter(ride => {
     if (filter === "all") return true;
-    if (filter === "upcoming") return ride.status === "upcoming";
+    if (filter === "upcoming") return ride.status === "upcoming" || ride.status === "planned";
     if (filter === "past") return ride.status === "past";
-    if (filter === "roadtrip") return ride.category === "roadtrip";
-    if (filter === "caritatif") return ride.category === "caritatif";
+    if (filter === "roadtrip") return ride.type.toLowerCase().includes("road");
+    if (filter === "caritatif") return ride.type.toLowerCase().includes("caritatif");
     return true;
   });
+
+  if (filtered.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "rides-row rides-empty";
+    empty.textContent = "Aucune sortie dans cette catégorie.";
+    container.appendChild(empty);
+    return;
+  }
+
   filtered.forEach(ride => {
+    const display = getRideDisplay(ride);
     const row = document.createElement("div");
     row.className = "rides-row";
-    let badgeClass = "";
-    if (ride.status === "upcoming") badgeClass = "badge badge-open";
-    else if (ride.status === "past") badgeClass = "badge badge-done";
+
     let btnClass = "ride-btn";
-    if (ride.actionType === "disabled") btnClass += " ride-btn--disabled";
-    if (ride.actionType === "register") btnClass += " ride-btn--primary";
+    if (display.actionType === "disabled") btnClass += " ride-btn--disabled";
+    if (display.actionType === "register") btnClass += " ride-btn--primary";
+
     row.innerHTML = `
-      <span>${ride.date}</span>
+      <span>${formatDate(ride.start_date)}</span>
       <span>${ride.title}</span>
       <span>${ride.type}</span>
       <span>${ride.level}</span>
-      <span class="${badgeClass}">${ride.statusLabel}</span>
+      <span class="${display.badgeClass}">${display.label}</span>
       <span>
-        <button class="${btnClass}" data-ride-id="${ride.id}">
-          ${ride.actionLabel}
+        <button class="${btnClass}" data-ride-id="${ride.id}" data-action="${display.actionType}">
+          ${display.actionLabel}
         </button>
       </span>
     `;
     container.appendChild(row);
   });
+
   initRideButtons();
 }
 
 function initRideButtons() {
   const buttons = document.querySelectorAll(".ride-btn");
-  for (let i = 0; i < buttons.length; i++) {
-    const btn = buttons[i];
+  buttons.forEach(btn => {
     btn.addEventListener("click", function () {
-      const id = parseInt(btn.dataset.rideId, 10);
-      const ride = rides.find(r => r.id === id);
-      if (!ride) return;
-      if (btn.classList.contains("ride-btn--disabled")) {
-        alert("Le compte rendu ou les inscriptions ne sont pas encore disponibles pour cette sortie.");
+      const action = btn.dataset.action;
+      const id = btn.dataset.rideId;
+      if (action === "disabled") {
+        alert("Les inscriptions ou le compte rendu ne sont pas encore disponibles.");
         return;
       }
-      if (ride.actionType === "register") window.open(ride.actionUrl, "_blank");
-      if (ride.actionType === "report") window.location.href = ride.actionUrl;
+      window.location.href = "ride.html?id=" + id;
     });
-  }
+  });
 }
 
-function initRideFilters() {
+async function initRideFilters() {
+  const token = localStorage.getItem("token");
+  const container = document.getElementById("rides-body");
+
+  // Chargement depuis l'API
+  try {
+    const res = await fetch(`${API}/api/member/all-rides`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (res.ok) {
+      allRides = await res.json();
+    } else {
+      if (container) container.textContent = "Impossible de charger les sorties.";
+      return;
+    }
+  } catch {
+    if (container) container.textContent = "Erreur réseau.";
+    return;
+  }
+
+  // Filtres
   const filterButtons = document.querySelectorAll(".rides-filter");
-  if (!filterButtons.length) return;
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       const filter = btn.dataset.filter || "all";
@@ -164,6 +141,7 @@ function initRideFilters() {
       renderRidesTable(filter);
     });
   });
+
   renderRidesTable("all");
 }
 
@@ -175,8 +153,8 @@ function renderMembersGalleries(filter) {
   if (!grid) return;
   grid.innerHTML = "";
   const albums = [];
-  for (let i = 0; i < rides.length; i++) {
-    const ride = rides[i];
+  for (let i = 0; i < allRides.length; i++) {
+    const ride = allRides[i];
     if (!ride.gallery || ride.gallery.length === 0) continue;
     let keep = true;
     if (filter === "balade" && ride.category !== "balade") keep = false;
@@ -225,7 +203,7 @@ function initMembersGalleryButtons() {
     const btn = buttons[i];
     btn.addEventListener("click", function () {
       const id = parseInt(btn.dataset.galleryId, 10);
-      const ride = rides.find(r => r.id === id);
+      const ride = allRides.find(r => r.id === id);
       if (!ride) return;
       const hasPhotos = Array.isArray(ride.gallery) && ride.gallery.length > 0;
       if (!hasPhotos || btn.classList.contains("members-gallery-btn--disabled")) {
@@ -322,6 +300,146 @@ function initLogout() {
 }
 
 // ─────────────────────────────────────────
+// BOÎTE À IDÉES
+// ─────────────────────────────────────────
+function initIdeaForm() {
+  const form = document.getElementById("idea-form");
+  if (!form) return;
+
+  const msgEl = document.getElementById("idea-msg");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    const title = document.getElementById("idea-title").value.trim();
+    const content = document.getElementById("idea-content").value.trim();
+
+    if (!title || !content) {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Titre et description requis.";
+      }
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/member/idea`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, content })
+      });
+
+      const data = await res.json();
+
+      if (msgEl) {
+        msgEl.style.display = "block";
+        if (res.ok) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "✅ " + data.message;
+          form.reset();
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = "❌ " + (data.error || "Erreur inconnue.");
+        }
+      }
+    } catch {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Impossible de contacter le serveur.";
+      }
+    }
+  });
+}
+
+// ─────────────────────────────────────────
+// AVIS SUR LES SORTIES
+// ─────────────────────────────────────────
+async function initFeedbackForm() {
+  const form = document.getElementById("feedback-form");
+  if (!form) return;
+
+  const token = localStorage.getItem("token");
+  const select = document.getElementById("event-select");
+  const msgEl = document.getElementById("feedback-msg");
+
+  // Charger les sorties depuis l'API pour peupler le <select>
+  try {
+    const res = await fetch(`${API}/api/member/rides`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (res.ok) {
+      const ridesData = await res.json();
+      select.innerHTML = '<option value="">Choisir une sortie…</option>';
+
+      ridesData.forEach(function (ride) {
+        const option = document.createElement("option");
+        option.value = ride.id;
+        option.textContent = ride.title + " – " + ride.start_date;
+        select.appendChild(option);
+      });
+    }
+  } catch {
+    // En cas d'erreur réseau, on laisse le select vide
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const ride_id = select.value;
+    const rating = document.getElementById("feedback-rating").value;
+    const comment = document.getElementById("feedback-comment").value.trim();
+
+    if (!ride_id || !rating || !comment) {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Sortie, note et commentaire requis.";
+      }
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/member/feedback`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ ride_id, rating, comment })
+      });
+
+      const data = await res.json();
+
+      if (msgEl) {
+        msgEl.style.display = "block";
+        if (res.ok) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "✅ " + data.message;
+          form.reset();
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = "❌ " + (data.error || "Erreur inconnue.");
+        }
+      }
+    } catch {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Impossible de contacter le serveur.";
+      }
+    }
+  });
+}
+
+
+// ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
@@ -329,4 +447,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initRideFilters();
   initMembersGalleryFilters();
   initAdminSection();
+  initIdeaForm();
+  initFeedbackForm();
 });

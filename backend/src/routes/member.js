@@ -64,11 +64,27 @@ router.post("/feedback", authMiddleware, async (req, res) => {
 router.get("/rides", authMiddleware, async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id, title, start_date FROM rides ORDER BY start_date DESC"
+      "SELECT id, title, start_date FROM rides WHERE status = 'past' ORDER BY start_date DESC"
     );
     res.json(rows);
   } catch (err) {
     console.error("Erreur /rides :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// GET /api/member/all-rides
+// Toutes les sorties pour le tableau membres
+// ─────────────────────────────────────────
+router.get("/all-rides", authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT id, title, start_date, end_date, type, level, status FROM rides ORDER BY start_date DESC"
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur /all-rides :", err);
     res.status(500).json({ error: "Erreur serveur." });
   }
 });
