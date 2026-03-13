@@ -268,100 +268,38 @@
   padding: 2.5rem 3rem 3rem;
 }
 
-.gallery-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.2rem;
-  justify-content: center;
-}
-
-.gallery-filter {
-  padding: 0.35rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  cursor: pointer;
-}
-
-.gallery-filter--active,
-.gallery-filter:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(255, 180, 0, 0.08);
-}
-
-.members-gallery-grid {
+.gallery-preview-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
-.members-gallery-card {
-  background: rgba(5, 18, 34, 0.95);
-  border-radius: 12px;
+.gallery-preview-item {
+  border-radius: 8px;
+  overflow: hidden;
   border: 1px solid var(--border-soft);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  aspect-ratio: 4/3;
 }
 
-.members-gallery-cover {
-  height: 160px;
-  background: #020813;
-  overflow: hidden;
+.gallery-preview-item:hover {
+  transform: scale(1.02);
+  border-color: var(--accent);
 }
 
-.members-gallery-cover img {
+.gallery-preview-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.members-gallery-body {
-  padding: 1rem 1rem 0.9rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.members-gallery-title {
-  font-weight: 600;
-  color: var(--text-light);
-  margin-bottom: 0.2rem;
-}
-
-.members-gallery-meta {
-  font-size: 0.8rem;
-  margin-bottom: 0.6rem;
-}
-
-.members-gallery-actions {
-  padding: 0 1rem 1rem;
-}
-
-.members-gallery-btn {
-  padding: 0.4rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: var(--text-dark);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  cursor: pointer;
-}
-
-.members-gallery-btn:hover {
-  filter: brightness(1.05);
-}
-
-.members-gallery-btn--disabled {
-  opacity: 0.5;
-  cursor: default;
+@media (max-width: 700px) {
+  .gallery-preview-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Responsive */

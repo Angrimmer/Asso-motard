@@ -598,6 +598,41 @@ function initPendingButtons(token) {
   });
 }
 
+// ─────────────────────────────────────────
+// APERÇU GALERIE (3 dernières photos) SECTION RIDES
+// ─────────────────────────────────────────
+async function initGalleryPreview() {
+  const container = document.getElementById("gallery-preview");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${API}/api/member/photos`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+
+    const photos = await res.json();
+    const preview = photos.slice(0, 3);
+
+    if (preview.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; text-align:center;">Aucune photo disponible pour l\'instant.</p>';
+      return;
+    }
+
+    preview.forEach(function (photo) {
+      const item = document.createElement("a");
+      item.className = "gallery-preview-item";
+      item.href = "galerie.html";
+      item.innerHTML = '<img src="' + API + photo.url + '" alt="' + (photo.caption || "Photo de sortie") + '" />';
+      container.appendChild(item);
+    });
+
+  } catch {}
+}
+
+
 
 // ─────────────────────────────────────────
 // INIT
@@ -611,4 +646,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initUploadPhotoForm();
   initMemberUploadForm();
   initPendingPhotos();
+  initGalleryPreview();
 });
+

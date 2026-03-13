@@ -4,6 +4,24 @@
 const API = "http://localhost:4000";
 
 // ─────────────────────────────────────────
+// GARDE D'AUTHENTIFICATION
+// ─────────────────────────────────────────
+(function authGuard() {
+  const token = localStorage.getItem("token");
+  if (!token) { window.location.href = "connexion.html"; return; }
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.exp && Date.now() / 1000 > payload.exp) {
+      localStorage.removeItem("token");
+      window.location.href = "connexion.html";
+    }
+  } catch {
+    localStorage.removeItem("token");
+    window.location.href = "connexion.html";
+  }
+})();
+
+// ─────────────────────────────────────────
 // PAGE COMPTE RENDU DE SORTIE
 // ─────────────────────────────────────────
 async function initRidePage() {
@@ -120,9 +138,21 @@ function initRideLightbox() {
   });
 }
 
+// Deconnexion button
+function initLogout() {
+  const btn = document.getElementById("logout-btn");
+  if (!btn) return;
+  btn.addEventListener("click", function () {
+    localStorage.removeItem("token");
+    window.location.href = "connexion.html";
+  });
+}
+
+
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
+  initLogout();
   initRidePage();
 });
