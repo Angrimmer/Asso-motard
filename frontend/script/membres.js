@@ -288,6 +288,90 @@ function initAdminSection() {
 }
 
 // ─────────────────────────────────────────
+// UPLOAD PHOTOS (admin/bureau)
+// ─────────────────────────────────────────
+async function initUploadPhotoForm() {
+  const form = document.getElementById("upload-photo-form");
+  if (!form) return;
+
+  const token = localStorage.getItem("token");
+  const select = document.getElementById("upload-ride-select");
+  const msgEl = document.getElementById("upload-photo-msg");
+
+  // Charger toutes les sorties pour peupler le <select>
+  try {
+    const res = await fetch(`${API}/api/member/all-rides`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (res.ok) {
+      const ridesData = await res.json();
+      select.innerHTML = '<option value="">Choisir une sortie…</option>';
+      ridesData.forEach(function (ride) {
+        const option = document.createElement("option");
+        option.value = ride.id;
+        option.textContent = ride.title + " – " + new Date(ride.start_date).toLocaleDateString("fr-FR");
+        select.appendChild(option);
+      });
+    }
+  } catch {
+    // silencieux
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const ride_id = select.value;
+    const caption = document.getElementById("upload-caption").value.trim();
+    const files = document.getElementById("photo-upload-admin").files;
+
+    if (!ride_id || files.length === 0) {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Choisissez une sortie et au moins une photo.";
+      }
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("ride_id", ride_id);
+    formData.append("caption", caption);
+    for (let i = 0; i < files.length; i++) {
+      formData.append("photos", files[i]);
+    }
+
+    try {
+      const res = await fetch(`${API}/api/admin/upload-photo`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (msgEl) {
+        msgEl.style.display = "block";
+        if (res.ok) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "✅ " + data.message;
+          form.reset();
+          select.innerHTML = '<option value="">Choisir une sortie…</option>';
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = "❌ " + (data.error || "Erreur inconnue.");
+        }
+      }
+    } catch {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Impossible de contacter le serveur.";
+      }
+    }
+  });
+}
+
+// ─────────────────────────────────────────
 // DÉCONNEXION
 // ─────────────────────────────────────────
 function initLogout() {
@@ -438,6 +522,172 @@ async function initFeedbackForm() {
   });
 }
 
+// ─────────────────────────────────────────
+// UPLOAD PHOTOS MEMBRE
+// ─────────────────────────────────────────
+async function initMemberUploadForm() {
+  const form = document.getElementById("member-upload-form");
+  if (!form) return;
+
+  const token = localStorage.getItem("token");
+  const select = document.getElementById("member-upload-ride-select");
+  const msgEl = document.getElementById("member-upload-msg");
+
+  try {
+    const res = await fetch(`${API}/api/member/all-rides`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (res.ok) {
+      const ridesData = await res.json();
+      select.innerHTML = '<option value="">Choisir une sortie…</option>';
+      ridesData.forEach(function (ride) {
+        const opt = document.createElement("option");
+        opt.value = ride.id;
+        opt.textContent = ride.title + " – " + new Date(ride.start_date).toLocaleDateString("fr-FR");
+        select.appendChild(opt);
+      });
+    }
+  } catch {}
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const ride_id = select.value;
+    const caption = document.getElementById("member-upload-caption").value.trim();
+    const files = document.getElementById("photo-upload-member").files;
+
+    if (!ride_id || files.length === 0) {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Choisissez une sortie et au moins une photo.";
+      }
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("ride_id", ride_id);
+    formData.append("caption", caption);
+    for (let i = 0; i < files.length; i++) {
+      formData.append("photos", files[i]);
+    }
+
+    try {
+      const res = await fetch(`${API}/api/member/upload-photo`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (msgEl) {
+        msgEl.style.display = "block";
+        if (res.ok) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "✅ " + data.message;
+          form.reset();
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = "❌ " + (data.error || "Erreur inconnue.");
+        }
+      }
+    } catch {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Impossible de contacter le serveur.";
+      }
+    }
+  });
+}
+
+// ─────────────────────────────────────────
+// VALIDATION PHOTOS (admin/bureau)
+// ─────────────────────────────────────────
+async function initPendingPhotos() {
+  const container = document.getElementById("pending-photos-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${API}/api/admin/photos/pending`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+
+    const photos = await res.json();
+
+    if (photos.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune photo en attente.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+    photos.forEach(function (photo) {
+      const item = document.createElement("div");
+      item.className = "pending-photo-item";
+      item.id = "pending-" + photo.id;
+      item.innerHTML =
+        '<img src="' + API + photo.url + '" alt="Photo en attente" class="pending-photo-img" />' +
+        '<div class="pending-photo-info">' +
+        '<span class="pending-photo-ride">' + photo.ride_title + '</span>' +
+        '<span class="pending-photo-author">Par : ' + photo.uploaded_by + '</span>' +
+        (photo.caption ? '<span class="pending-photo-caption">' + photo.caption + '</span>' : '') +
+        '</div>' +
+        '<div class="pending-photo-actions">' +
+        '<button class="pending-approve-btn" data-id="' + photo.id + '">✅ Approuver</button>' +
+        '<button class="pending-reject-btn" data-id="' + photo.id + '">❌ Refuser</button>' +
+        '</div>';
+      container.appendChild(item);
+    });
+
+    initPendingButtons(token);
+
+  } catch {
+    container.innerHTML = '<p style="color:red; font-size:0.9rem;">Erreur de chargement.</p>';
+  }
+}
+
+function initPendingButtons(token) {
+  document.querySelectorAll(".pending-approve-btn").forEach(function (btn) {
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      try {
+        const res = await fetch(`${API}/api/admin/photo/${id}/approve`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById("pending-" + id).remove();
+          const container = document.getElementById("pending-photos-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune photo en attente.</p>';
+          }
+        }
+      } catch {}
+    });
+  });
+
+  document.querySelectorAll(".pending-reject-btn").forEach(function (btn) {
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      if (!confirm("Refuser et supprimer cette photo ?")) return;
+      try {
+        const res = await fetch(`${API}/api/admin/photo/${id}/reject`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById("pending-" + id).remove();
+          const container = document.getElementById("pending-photos-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune photo en attente.</p>';
+          }
+        }
+      } catch {}
+    });
+  });
+}
+
 
 // ─────────────────────────────────────────
 // INIT
@@ -449,4 +699,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initAdminSection();
   initIdeaForm();
   initFeedbackForm();
+  initUploadPhotoForm();
+  initMemberUploadForm();
+  initPendingPhotos();
 });

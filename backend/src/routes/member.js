@@ -119,4 +119,83 @@ router.get("/ride/:id", authMiddleware, async (req, res) => {
 });
 
 
+// ─────────────────────────────────────────
+// GET /api/member/photos
+// Photos approuvées, toutes ou par sortie
+// ─────────────────────────────────────────
+router.get("/photos", authMiddleware, async (req, res) => {
+  const ride_id = req.query.ride_id ? parseInt(req.query.ride_id, 10) : null;
+
+  try {
+    let rows;
+    if (ride_id) {
+      [rows] = await db.query(
+        "SELECT rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.ride_id = ? AND rp.is_approved = 1 ORDER BY rp.taken_at ASC",
+        [ride_id]
+      );
+    } else {
+      [rows] = await db.query(
+        "SELECT rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.is_approved = 1 ORDER BY r.start_date DESC, rp.taken_at ASC"
+      );
+    }
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur /photos :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// POST /api/member/upload-photo
+// Upload de photos par un membre (en attente de validation)
+// ─────────────────────────────────────────
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+const uploadDir = path.join(__dirname, "../../uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { cb(null, uploadDir); },
+  filename: function (req, file, cb) {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, unique + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: function (req, file, cb) {
+    const allowed = [".jpg", ".jpeg", ".png", ".webp"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowed.includes(ext)) cb(null, true);
+    else cb(new Error("Format non supporté."));
+  }
+});
+
+router.post("/upload-photo", authMiddleware, upload.array("photos", 10), async (req, res) => {
+  const { ride_id, caption } = req.body;
+
+  if (!ride_id || !req.files || req.files.length === 0) {
+    return res.status(400).json({ error: "Sortie et photos requises." });
+  }
+
+  try {
+    for (const file of req.files) {
+      const url = "/uploads/" + file.filename;
+      await db.query(
+        "INSERT INTO ride_photos (ride_id, url, caption, uploaded_by, is_approved) VALUES (?, ?, ?, ?, 0)",
+        [ride_id, url, caption || null, req.user.id]
+      );
+    }
+    res.status(201).json({ message: `${req.files.length} photo(s) soumise(s) au bureau pour validation.` });
+  } catch (err) {
+    console.error("Erreur /upload-photo membre :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+
 module.exports = router;

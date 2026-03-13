@@ -93,16 +93,25 @@
 
               <article class="members-block">
                 <h3>Dépôt de photos</h3>
-                <p>
-                  Ajoutez vos photos de balades. Elles seront publiées après
-                  validation par le bureau et en respectant le droit à l'image (CNIL).
-                </p>
-                <form class="simple-form" enctype="multipart/form-data">
+                <p>Ajoutez vos photos de balades. Elles seront publiées après validation par le bureau et en respectant le droit à l'image (CNIL).</p>
+                <form class="simple-form" id="member-upload-form" enctype="multipart/form-data">
+              
+                  <label for="member-upload-ride-select">Sortie concernée</label>
+                  <select id="member-upload-ride-select" required>
+                    <option value="">Choisir une sortie…</option>
+                  </select>
+              
+                  <label for="member-upload-caption">Légende (optionnel)</label>
+                  <input type="text" id="member-upload-caption" placeholder="Ex : Pause au sommet des Vosges" />
+              
                   <label for="photo-upload-member">Sélectionner des photos</label>
-                  <input id="photo-upload-member" type="file" multiple />
+                  <input id="photo-upload-member" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
+              
                   <button type="submit">Soumettre au bureau</button>
+                  <p id="member-upload-msg" style="display:none; margin-top:0.5rem;"></p>
                 </form>
               </article>
+                
             </div>
 
             <!-- BLOC ADMIN / BUREAU — caché par défaut -->
@@ -128,18 +137,33 @@
                   <button type="submit">Envoyer l'invitation</button>
                 </form>
               </article>
-              <article class="members-block">
+              <article class="admin-block">
                 <h3>Dépôt de photos</h3>
-                <p>
-                  Ajoutez vos photos de balades. Elles seront publiées après
-                  validation par le bureau et en respectant le droit à l'image (CNIL).
-                </p>
-                <form class="simple-form" enctype="multipart/form-data">
+                <p>Ajoutez des photos de balades. Elles seront publiées immédiatement.</p>
+                <form class="simple-form" id="upload-photo-form" enctype="multipart/form-data">
+              
+                  <label for="upload-ride-select">Sortie concernée</label>
+                  <select id="upload-ride-select" required>
+                    <option value="">Choisir une sortie…</option>
+                  </select>
+              
+                  <label for="upload-caption">Légende (optionnel)</label>
+                  <input type="text" id="upload-caption" placeholder="Ex : Pause au sommet des Vosges" />
+              
                   <label for="photo-upload-admin">Sélectionner des photos</label>
-                  <input id="photo-upload-admin" type="file" multiple />
-                  <button type="submit">Soumettre au bureau</button>
+                  <input id="photo-upload-admin" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
+              
+                  <button type="submit">Publier les photos</button>
+                  <p id="upload-photo-msg" style="display:none; margin-top:0.5rem;"></p>
                 </form>
               </article>
+              <article class="admin-block">
+                <h3>Photos en attente de validation</h3>
+                <div id="pending-photos-list">
+                  <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                </div>
+              </article>
+                
             </div>
 
             <p class="members-note">

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Galerie photos – Les Fêlés du Bocal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style/galerie.css"/>
+    <link rel="stylesheet" href="style/style.css"/>
+  <script src="script/galerie.js" defer></script>
+</head>
+<body>
+  <div class="page">
+
+    <header>
+      <nav class="nav">
+        <div class="logo">
+          <div class="logo-placeholder">LOGO</div>
+          <span>Les Fêlés du Bocal</span>
+        </div>
+        <div class="nav-links">
+          <a href="index.html#home">Accueil</a>
+          <a href="index.html#values">Esprit motard</a>
+          <a href="index.html#events">Sorties</a>
+          <a href="membres.html">Espace membres</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <button id="logout-btn" class="nav-cta">Se déconnecter</button>
+      </nav>
+    </header>
+
+    <main>
+
+      <!-- HERO -->
+      <section class="members-hero">
+        <div class="section-header">
+          <div class="section-kicker">Espace membres</div>
+          <h1 class="section-title">Galerie photos</h1>
+        </div>
+        <p style="text-align:center; color:var(--text-muted); font-size:0.95rem; margin-top:-1rem;">
+          Retrouvez les photos de toutes nos sorties.
+        </p>
+      </section>
+
+      <!-- SÉLECTEUR DE SORTIE -->
+      <section class="galerie-select-section">
+        <div class="galerie-select-wrapper">
+          <label for="galerie-ride-select" class="galerie-select-label">Choisir une sortie</label>
+          <select id="galerie-ride-select" class="galerie-select">
+            <option value="">Toutes les sorties</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- GRILLE PHOTOS -->
+      <section class="galerie-section">
+        <div id="galerie-grid" class="galerie-grid">
+          <p style="color:var(--text-muted); font-size:0.9rem;">Chargement des photos…</p>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <span>© 2026 Asso Motards Les Fêlés du Bocal – Association loi 1901.</span>
+      <span>Mentions légales • Politique de confidentialité</span>
+    </footer>
+
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="ride-lightbox" id="galerie-lightbox">
+    <div class="ride-lightbox-inner">
+      <img src="" alt="Photo de la sortie" id="galerie-lightbox-img" />
+    </div>
+  </div>
+
+</body>
+</html>

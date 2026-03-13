@@ -37,3 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
           animateCounter(followersEl, target);
         }
       });
+
+(function () {
+  const link = document.getElementById("nav-membres-link");
+  if (!link) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.exp && Date.now() / 1000 > payload.exp) {
+      localStorage.removeItem("token");
+      return;
+    }
+    link.href = "membres.html";
+  } catch {
+    localStorage.removeItem("token");
+  }
+})();

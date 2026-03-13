@@ -99,6 +99,76 @@
   color: var(--text-muted);
 }
 
+.pending-photo-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  background: rgba(11, 28, 45, 0.6);
+}
+
+.pending-photo-img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.pending-photo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+}
+
+.pending-photo-ride {
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.pending-photo-author,
+.pending-photo-caption {
+  color: var(--text-muted);
+}
+
+.pending-photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pending-approve-btn,
+.pending-reject-btn {
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.pending-approve-btn {
+  background: rgba(0, 150, 0, 0.7);
+  color: white;
+}
+
+.pending-approve-btn:hover {
+  background: rgba(0, 190, 0, 0.9);
+}
+
+.pending-reject-btn {
+  background: rgba(180, 0, 0, 0.7);
+  color: white;
+}
+
+.pending-reject-btn:hover {
+  background: rgba(220, 0, 0, 0.9);
+}
+
+
 /* Boutons du tableau */
 
 .ride-btn {
