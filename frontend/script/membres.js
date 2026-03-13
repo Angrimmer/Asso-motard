@@ -146,96 +146,6 @@ async function initRideFilters() {
 }
 
 // ─────────────────────────────────────────
-// GALERIES
-// ─────────────────────────────────────────
-function renderMembersGalleries(filter) {
-  const grid = document.getElementById("members-gallery-grid");
-  if (!grid) return;
-  grid.innerHTML = "";
-  const albums = [];
-  for (let i = 0; i < allRides.length; i++) {
-    const ride = allRides[i];
-    if (!ride.gallery || ride.gallery.length === 0) continue;
-    let keep = true;
-    if (filter === "balade" && ride.category !== "balade") keep = false;
-    if (filter === "roadtrip" && ride.category !== "roadtrip") keep = false;
-    if (filter === "caritatif" && ride.category !== "caritatif") keep = false;
-    if (keep) albums.push(ride);
-  }
-  if (albums.length === 0) {
-    const p = document.createElement("p");
-    p.style.fontSize = "0.85rem";
-    p.style.color = "var(--text-muted)";
-    p.textContent = "Aucune galerie ne correspond encore à ce filtre.";
-    grid.appendChild(p);
-    return;
-  }
-  for (let i = 0; i < albums.length; i++) {
-    const ride = albums[i];
-    const card = document.createElement("article");
-    card.className = "members-gallery-card";
-    const hasPhotos = Array.isArray(ride.gallery) && ride.gallery.length > 0;
-    const coverUrl = hasPhotos ? ride.gallery[0] : "https://via.placeholder.com/400x250?text=Aucune+photo";
-    const btnLabel = hasPhotos ? "Voir la galerie" : "Pas encore de photos";
-    const btnClasses = hasPhotos ? "members-gallery-btn" : "members-gallery-btn members-gallery-btn--disabled";
-    card.innerHTML =
-      '<div class="members-gallery-cover">' +
-      '<img src="' + coverUrl + '" alt="Photo de la sortie" />' +
-      "</div>" +
-      '<div class="members-gallery-body">' +
-      '<div class="members-gallery-title">' + ride.title + "</div>" +
-      '<div class="members-gallery-meta">' + ride.date + " • " + ride.type + "</div>" +
-      "</div>" +
-      '<div class="members-gallery-actions">' +
-      '<button class="' + btnClasses + '" data-gallery-id="' + ride.id + '">' +
-      btnLabel +
-      "</button>" +
-      "</div>";
-    grid.appendChild(card);
-  }
-  initMembersGalleryButtons();
-}
-
-function initMembersGalleryButtons() {
-  const buttons = document.querySelectorAll(".members-gallery-btn");
-  if (!buttons.length) return;
-  for (let i = 0; i < buttons.length; i++) {
-    const btn = buttons[i];
-    btn.addEventListener("click", function () {
-      const id = parseInt(btn.dataset.galleryId, 10);
-      const ride = allRides.find(r => r.id === id);
-      if (!ride) return;
-      const hasPhotos = Array.isArray(ride.gallery) && ride.gallery.length > 0;
-      if (!hasPhotos || btn.classList.contains("members-gallery-btn--disabled")) {
-        alert("Aucune photo n'a encore été ajoutée pour cette sortie.");
-        return;
-      }
-      window.location.href = "ride.html?id=" + ride.id;
-    });
-  }
-}
-
-function initMembersGalleryFilters() {
-  const filterButtons = document.querySelectorAll(".gallery-filter");
-  if (!filterButtons.length) return;
-  function setGalleryFilter(filter) {
-    for (let i = 0; i < filterButtons.length; i++) {
-      const btn = filterButtons[i];
-      const btnFilter = btn.dataset.galleryFilter || "all";
-      if (btnFilter === filter) btn.classList.add("gallery-filter--active");
-      else btn.classList.remove("gallery-filter--active");
-    }
-    renderMembersGalleries(filter);
-  }
-  for (let i = 0; i < filterButtons.length; i++) {
-    filterButtons[i].addEventListener("click", function () {
-      setGalleryFilter(filterButtons[i].dataset.galleryFilter || "all");
-    });
-  }
-  setGalleryFilter("all");
-}
-
-// ─────────────────────────────────────────
 // SECTION ADMIN — CRÉATION DE MEMBRE
 // ─────────────────────────────────────────
 function initAdminSection() {
@@ -695,7 +605,6 @@ function initPendingButtons(token) {
 document.addEventListener("DOMContentLoaded", function () {
   initLogout();
   initRideFilters();
-  initMembersGalleryFilters();
   initAdminSection();
   initIdeaForm();
   initFeedbackForm();
