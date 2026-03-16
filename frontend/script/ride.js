@@ -31,13 +31,13 @@ async function initRidePage() {
   const idParam = params.get("id");
   const id = idParam ? parseInt(idParam, 10) : NaN;
 
-  const titleEl  = document.getElementById("ride-title");
-  const metaEl   = document.getElementById("ride-meta");
-  const dateEl   = document.getElementById("ride-date");
-  const typeEl   = document.getElementById("ride-type");
-  const levelEl  = document.getElementById("ride-level");
-  const statusEl = document.getElementById("ride-status");
-  const descEl   = document.getElementById("ride-description");
+  const titleEl   = document.getElementById("ride-title");
+  const metaEl    = document.getElementById("ride-meta");
+  const dateEl    = document.getElementById("ride-date");
+  const typeEl    = document.getElementById("ride-type");
+  const levelEl   = document.getElementById("ride-level");
+  const statusEl  = document.getElementById("ride-status");
+  const descEl    = document.getElementById("ride-description");
   const galleryEl = document.getElementById("ride-gallery");
 
   if (!idParam || isNaN(id)) {
@@ -107,12 +107,14 @@ async function initRidePage() {
 
     initRideLightbox();
     initRideFeedback(id);
+    initRideRegistration(id, ride.status);
 
   } catch {
     if (titleEl) titleEl.textContent = "Erreur de chargement";
     if (descEl)  descEl.textContent  = "Impossible de contacter le serveur.";
   }
 }
+
 
 // ─────────────────────────────────────────
 // LIGHTBOX
@@ -196,6 +198,108 @@ async function initRideFeedback(rideId) {
     container.innerHTML = '<p style="color:var(--text-muted);">Erreur réseau.</p>';
   }
 }
+
+// ─────────────────────────────────────────
+// INSCRIPTION / INSCRITS
+// ─────────────────────────────────────────
+async function initRideRegistration(rideId, rideStatus) {
+  const token = localStorage.getItem("token");
+  const registerSection = document.getElementById("ride-register-section");
+  const registerBtn = document.getElementById("ride-register-btn");
+  const registerMsg = document.getElementById("ride-register-msg");
+  const registrationsList = document.getElementById("ride-registrations-list");
+
+  if (rideStatus === "upcoming" && registerSection) {
+    registerSection.style.display = "block";
+
+    // Vérifier si déjà inscrit
+    try {
+      const res = await fetch(`${API}/api/member/ride/${rideId}/is-registered`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.registered) {
+        registerBtn.textContent = "Se désinscrire";
+        registerBtn.classList.add("ride-unregister-btn");
+      }
+    } catch {}
+
+    registerBtn.addEventListener("click", async function () {
+      const isRegistered = registerBtn.classList.contains("ride-unregister-btn");
+      const method = isRegistered ? "DELETE" : "POST";
+
+      try {
+        const res = await fetch(`${API}/api/member/ride/${rideId}/register`, {
+          method,
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (registerMsg) {
+          registerMsg.style.display = "block";
+          if (res.ok) {
+            registerMsg.style.color = "green";
+            registerMsg.textContent = "✅ " + data.message;
+            if (isRegistered) {
+              registerBtn.textContent = "S'inscrire à cette sortie";
+              registerBtn.classList.remove("ride-unregister-btn");
+            } else {
+              registerBtn.textContent = "Se désinscrire";
+              registerBtn.classList.add("ride-unregister-btn");
+            }
+            await loadRegistrations(rideId, token, registrationsList);
+          } else {
+            registerMsg.style.color = "red";
+            registerMsg.textContent = "❌ " + (data.error || "Erreur inconnue.");
+          }
+        }
+      } catch {
+        if (registerMsg) {
+          registerMsg.style.display = "block";
+          registerMsg.style.color = "red";
+          registerMsg.textContent = "❌ Impossible de contacter le serveur.";
+        }
+      }
+    });
+  }
+
+  await loadRegistrations(rideId, token, registrationsList);
+}
+
+
+async function loadRegistrations(rideId, token, container) {
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API}/api/member/ride/${rideId}/registrations`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Impossible de charger.</p>';
+      return;
+    }
+
+    const registrations = await res.json();
+
+    if (registrations.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Aucun inscrit pour l\'instant.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+    registrations.forEach(function (reg) {
+      const item = document.createElement("div");
+      item.style.cssText = "font-size:0.85rem; padding:0.3rem 0; border-bottom:1px solid var(--border-soft); color:var(--text-light);";
+      item.textContent = reg.display_name;
+      container.appendChild(item);
+    });
+
+  } catch {
+    container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Erreur réseau.</p>';
+  }
+}
+
 
 // ─────────────────────────────────────────
 // INIT

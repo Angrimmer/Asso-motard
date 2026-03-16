@@ -724,6 +724,183 @@ function initIdeasButtons(token) {
   });
 }
 
+// ─────────────────────────────────────────
+// GESTION DES SORTIES (admin/bureau)
+// ─────────────────────────────────────────
+async function initRidesAdmin() {
+  const form = document.getElementById("ride-form");
+  if (!form) return;
+
+  const token = localStorage.getItem("token");
+  const submitBtn = document.getElementById("ride-submit-btn");
+  const cancelBtn = document.getElementById("ride-cancel-btn");
+  const editIdInput = document.getElementById("ride-edit-id");
+  const msgEl = document.getElementById("ride-form-msg");
+
+  await loadRidesAdminList(token);
+
+  // Annuler l'édition
+  cancelBtn.addEventListener("click", function () {
+    form.reset();
+    editIdInput.value = "";
+    submitBtn.textContent = "➕ Créer la sortie";
+    cancelBtn.style.display = "none";
+    if (msgEl) msgEl.style.display = "none";
+  });
+
+  // Soumission formulaire
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const editId = editIdInput.value;
+    const isEdit = editId !== "";
+
+    const body = {
+      title: document.getElementById("ride-title-input").value.trim(),
+      start_date: document.getElementById("ride-start-date").value,
+      end_date: document.getElementById("ride-end-date").value || null,
+      type: document.getElementById("ride-type-select").value,
+      level: document.getElementById("ride-level-select").value,
+      status: document.getElementById("ride-status-select").value,
+      short_description: document.getElementById("ride-short-desc").value.trim() || null,
+      full_description: document.getElementById("ride-full-desc").value.trim() || null
+    };
+
+    const url = isEdit ? `${API}/api/admin/ride/${editId}` : `${API}/api/admin/ride`;
+    const method = isEdit ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (msgEl) {
+        msgEl.style.display = "block";
+        if (res.ok) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "✅ " + data.message;
+          form.reset();
+          editIdInput.value = "";
+          submitBtn.textContent = "➕ Créer la sortie";
+          cancelBtn.style.display = "none";
+          await loadRidesAdminList(token);
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = "❌ " + (data.error || "Erreur inconnue.");
+        }
+      }
+    } catch {
+      if (msgEl) {
+        msgEl.style.display = "block";
+        msgEl.style.color = "red";
+        msgEl.textContent = "❌ Impossible de contacter le serveur.";
+      }
+    }
+  });
+}
+
+async function loadRidesAdminList(token) {
+  const container = document.getElementById("rides-admin-list");
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API}/api/member/all-rides`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      container.innerHTML = '<p style="color:var(--text-muted);">Impossible de charger les sorties.</p>';
+      return;
+    }
+
+    const rides = await res.json();
+
+    if (rides.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune sortie créée.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+    rides.forEach(function (ride) {
+      const item = document.createElement("div");
+      item.className = "pending-photo-item";
+      item.id = "ride-admin-" + ride.id;
+      item.innerHTML =
+        '<div class="pending-photo-info">' +
+        '<span class="pending-photo-ride">' + ride.title + '</span>' +
+        '<span class="pending-photo-author">' + new Date(ride.start_date).toLocaleDateString("fr-FR") + ' • ' + ride.type + ' • ' + ride.level + '</span>' +
+        '<span class="pending-photo-caption">' + ride.status + '</span>' +
+        '</div>' +
+        '<div class="pending-photo-actions">' +
+        '<button class="pending-approve-btn ride-edit-btn" data-id="' + ride.id + '">✏️ Modifier</button>' +
+        '<button class="pending-reject-btn ride-delete-btn" data-id="' + ride.id + '">🗑 Supprimer</button>' +
+        '</div>';
+      container.appendChild(item);
+    });
+
+    initRidesAdminButtons(token, rides);
+
+  } catch {
+    container.innerHTML = '<p style="color:red;">Erreur de chargement.</p>';
+  }
+}
+
+function initRidesAdminButtons(token, rides) {
+  // Boutons modifier
+  document.querySelectorAll(".ride-edit-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const id = parseInt(btn.dataset.id, 10);
+      const ride = rides.find(r => r.id === id);
+      if (!ride) return;
+
+      document.getElementById("ride-edit-id").value = ride.id;
+      document.getElementById("ride-title-input").value = ride.title;
+      document.getElementById("ride-start-date").value = ride.start_date ? ride.start_date.split("T")[0] : "";
+      document.getElementById("ride-end-date").value = ride.end_date ? ride.end_date.split("T")[0] : "";
+      document.getElementById("ride-type-select").value = ride.type;
+      document.getElementById("ride-level-select").value = ride.level;
+      document.getElementById("ride-status-select").value = ride.status;
+      document.getElementById("ride-short-desc").value = ride.short_description || "";
+      document.getElementById("ride-full-desc").value = ride.full_description || "";
+
+      document.getElementById("ride-submit-btn").textContent = "💾 Enregistrer les modifications";
+      document.getElementById("ride-cancel-btn").style.display = "inline-block";
+
+      // Scroll vers le formulaire
+      document.getElementById("ride-form").scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+  // Boutons supprimer
+  document.querySelectorAll(".ride-delete-btn").forEach(function (btn) {
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      if (!confirm("Supprimer cette sortie définitivement ? Les photos et avis associés seront aussi supprimés.")) return;
+
+      try {
+        const res = await fetch(`${API}/api/admin/ride/${id}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById("ride-admin-" + id).remove();
+          const container = document.getElementById("rides-admin-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune sortie créée.</p>';
+          }
+        }
+      } catch {}
+    });
+  });
+}
+
 
 // ─────────────────────────────────────────
 // INIT
@@ -739,5 +916,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initPendingPhotos();
   initGalleryPreview();
   initIdeasAdmin();
+  initRidesAdmin();
 });
 

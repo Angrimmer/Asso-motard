@@ -169,6 +169,69 @@
                   <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
                 </div>
               </article>
+              
+              <article class="admin-block">
+                <h3>🏍️ Gestion des sorties</h3>
+              
+                <!-- Formulaire création/édition -->
+                <form class="simple-form" id="ride-form">
+                  <input type="hidden" id="ride-edit-id" value="" />
+              
+                  <label for="ride-title-input">Titre</label>
+                  <input type="text" id="ride-title-input" placeholder="Ex : Route des Crêtes" required />
+              
+                  <label for="ride-start-date">Date de début</label>
+                  <input type="date" id="ride-start-date" required />
+              
+                  <label for="ride-end-date">Date de fin (optionnel)</label>
+                  <input type="date" id="ride-end-date" />
+              
+                  <label for="ride-type-select">Type</label>
+                  <select id="ride-type-select" required>
+                    <option value="">-- Choisir --</option>
+                    <option value="Balade journée">Balade journée</option>
+                    <option value="Soirée">Soirée</option>
+                    <option value="Road trip">Road trip</option>
+                    <option value="Caritatif">Caritatif</option>
+                  </select>
+              
+                  <label for="ride-level-select">Niveau</label>
+                  <select id="ride-level-select" required>
+                    <option value="">-- Choisir --</option>
+                    <option value="Tous niveaux">Tous niveaux</option>
+                    <option value="Débutant">Débutant</option>
+                    <option value="Débutant +">Débutant +</option>
+                    <option value="Intermédiaire">Intermédiaire</option>
+                    <option value="Confirmé">Confirmé</option>
+                  </select>
+              
+                  <label for="ride-status-select">Statut</label>
+                  <select id="ride-status-select" required>
+                    <option value="">-- Choisir --</option>
+                    <option value="upcoming">Inscriptions ouvertes</option>
+                    <option value="planned">Prévue</option>
+                    <option value="past">Terminé</option>
+                  </select>
+              
+                  <label for="ride-short-desc">Description courte (optionnel)</label>
+                  <textarea id="ride-short-desc" placeholder="Résumé en une phrase…"></textarea>
+              
+                  <label for="ride-full-desc">Compte rendu complet (optionnel)</label>
+                  <textarea id="ride-full-desc" placeholder="Compte rendu détaillé de la sortie…" rows="5"></textarea>
+              
+                  <div style="display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:0.3rem;">
+                    <button type="submit" id="ride-submit-btn">➕ Créer la sortie</button>
+                    <button type="button" id="ride-cancel-btn" style="display:none; background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Annuler</button>
+                  </div>
+                  <p id="ride-form-msg" style="display:none; margin-top:0.5rem;"></p>
+                </form>
+              
+                <!-- Liste des sorties existantes -->
+                <div id="rides-admin-list" style="margin-top:1.5rem;">
+                  <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                </div>
+              </article>
+                
             </div>
 
             <p class="members-note">

@@ -210,6 +210,75 @@
   line-height: 1.5;
 }
 
+/* ─── INSCRIPTION ─── */
+#ride-register-section {
+  margin-top: 1rem;
+}
+
+.ride-register-btn {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.ride-register-btn:hover {
+  filter: brightness(1.05);
+}
+
+.ride-register-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+#ride-register-msg {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* ─── INSCRITS ─── */
+#ride-registrations-section {
+  margin-top: 1.2rem;
+}
+
+.ride-registrations-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+#ride-registrations-list div {
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-light);
+}
+
+.ride-registrations-empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.ride-unregister-btn {
+  background: transparent;
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+.ride-unregister-btn:hover {
+  border-color: red;
+  color: red;
+  filter: none;
+}
+
 
 /* Responsive */
 

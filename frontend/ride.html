@@ -10,7 +10,7 @@
 </head>
 <body class="ride-page">
   <div class="page">
-    <!-- HEADER identique -->
+
     <header>
       <nav class="nav">
         <div class="logo">
@@ -29,45 +29,57 @@
     </header>
 
     <main class="ride-main">
+
       <section class="ride-hero">
         <p class="ride-kicker">Compte rendu de sortie</p>
-        <!-- Titre et info remplis par JS -->
         <h1 class="ride-title" id="ride-title">Titre de la sortie</h1>
-        <p class="ride-meta" id="ride-meta">
-          <!-- Exemple : 01–03/05/2026 • Road trip • Confirmé -->
-        </p>
+        <p class="ride-meta" id="ride-meta"></p>
       </section>
 
       <section class="ride-content-wrapper">
         <article class="ride-content">
-          <!-- Texte du CR injecté ici -->
-          <p id="ride-description">
-            Chargement du compte rendu…
-          </p>
+          <p id="ride-description">Chargement du compte rendu…</p>
         </article>
 
         <aside class="ride-sidebar">
+
+          <!-- Infos pratiques -->
           <div class="ride-info-card">
             <h2>Infos pratiques</h2>
             <ul>
-              <li><strong>Date :</strong> <span id="ride-date">–</span></li>
-              <li><strong>Type :</strong> <span id="ride-type">–</span></li>
-              <li><strong>Niveau :</strong> <span id="ride-level">–</span></li>
-              <li><strong>Statut :</strong> <span id="ride-status">–</span></li>
+              ><strong>Date :</strong> <span id="ride-date">–</span></li><br>
+              ><strong>Type :</strong> <span id="ride-type">–</span></li><br>
+              ><strong>Niveau :</strong> <span id="ride-level">–</span></li><br>
+              ><strong>Statut :</strong> <span id="ride-status">–</span></li><br>
             </ul>
+            </div>
+
+          <!-- Inscription -->
+          <div id="ride-register-section" class="ride-info-card" style="display:none;">
+            <button id="ride-register-btn" class="ride-register-btn">
+              S'inscrire à cette sortie
+            </button>
+            <p id="ride-register-msg" style="display:none;"></p>
+          </div>
+
+          <!-- Liste des inscrits -->
+          <div id="ride-registrations-section" class="ride-info-card">
+            <h3 class="ride-registrations-title">Inscrits</h3>
+            <div id="ride-registrations-list">
+              <p class="ride-registrations-empty">Chargement…</p>
+            </div>
           </div>
 
           <div class="ride-back">
             <a href="membres.html">&larr; Retour à la liste des sorties</a>
           </div>
+
         </aside>
       </section>
 
       <section class="ride-gallery">
         <h2>Galerie photos</h2>
-        <div class="ride-gallery-grid" id="ride-gallery">
-          <!-- vignettes / placeholders injectés par JS -->
-        </div>
+        <div class="ride-gallery-grid" id="ride-gallery"></div>
       </section>
 
       <section class="ride-feedback">
@@ -76,7 +88,7 @@
           <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
         </div>
       </section>
-        
+
     </main>
 
     <footer>
@@ -84,10 +96,12 @@
       <span>Mentions légales • Politique de confidentialité</span>
     </footer>
   </div>
+
   <div class="ride-lightbox" id="ride-lightbox">
-  <div class="ride-lightbox-inner">
-    <img src="" alt="Photo de la sortie" id="ride-lightbox-img" />
+    <div class="ride-lightbox-inner">
+      <img src="" alt="Photo de la sortie" id="ride-lightbox-img" />
+    </div>
   </div>
-</div>
+
 </body>
 </html>
