@@ -222,6 +222,101 @@ router.get("/ride/:id/feedback", authMiddleware, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────
+// POST /api/member/ride/:id/register
+// S'inscrire à une sortie
+// ─────────────────────────────────────────
+router.post("/ride/:id/register", authMiddleware, async (req, res) => {
+  const ride_id = parseInt(req.params.id, 10);
+  if (isNaN(ride_id)) return res.status(400).json({ error: "ID invalide." });
+
+  const user_id = req.user.id;
+
+  try {
+    // Vérifier que la sortie existe et est ouverte
+    const [[ride]] = await db.query(
+      "SELECT id, status FROM rides WHERE id = ?", [ride_id]
+    );
+    if (!ride) return res.status(404).json({ error: "Sortie introuvable." });
+    if (ride.status !== "upcoming") return res.status(400).json({ error: "Les inscriptions ne sont pas ouvertes pour cette sortie." });
+
+    await db.query(
+      "INSERT INTO ride_registrations (ride_id, user_id) VALUES (?, ?)",
+      [ride_id, user_id]
+    );
+    res.status(201).json({ message: "Inscription enregistrée !" });
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({ error: "Vous êtes déjà inscrit à cette sortie." });
+    }
+    console.error("Erreur /register :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// DELETE /api/member/ride/:id/register
+// Se désinscrire d'une sortie
+// ─────────────────────────────────────────
+router.delete("/ride/:id/register", authMiddleware, async (req, res) => {
+  const ride_id = parseInt(req.params.id, 10);
+  if (isNaN(ride_id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    await db.query(
+      "DELETE FROM ride_registrations WHERE ride_id = ? AND user_id = ?",
+      [ride_id, req.user.id]
+    );
+    res.json({ message: "Désinscription effectuée." });
+  } catch (err) {
+    console.error("Erreur /unregister :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// GET /api/member/ride/:id/registrations
+// Liste des inscrits à une sortie
+// ─────────────────────────────────────────
+router.get("/ride/:id/registrations", authMiddleware, async (req, res) => {
+  const ride_id = parseInt(req.params.id, 10);
+  if (isNaN(ride_id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    const [rows] = await db.query(
+      `SELECT u.display_name, rr.created_at
+       FROM ride_registrations rr
+       JOIN users u ON rr.user_id = u.id
+       WHERE rr.ride_id = ?
+       ORDER BY rr.created_at ASC`,
+      [ride_id]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur /registrations :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// GET /api/member/ride/:id/is-registered
+// Vérifier si le membre est inscrit
+// ─────────────────────────────────────────
+router.get("/ride/:id/is-registered", authMiddleware, async (req, res) => {
+  const ride_id = parseInt(req.params.id, 10);
+  if (isNaN(ride_id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    const [[row]] = await db.query(
+      "SELECT id FROM ride_registrations WHERE ride_id = ? AND user_id = ?",
+      [ride_id, req.user.id]
+    );
+    res.json({ registered: !!row });
+  } catch (err) {
+    console.error("Erreur /is-registered :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
 
 
 module.exports = router;

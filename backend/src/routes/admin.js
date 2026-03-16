@@ -258,5 +258,86 @@ router.delete("/idea/:id", authMiddleware, adminOnly, async (req, res) => {
   }
 });
 
+// ─────────────────────────────────────────
+// POST /api/admin/ride
+// Créer une sortie
+// ─────────────────────────────────────────
+router.post("/ride", authMiddleware, adminOnly, async (req, res) => {
+  const { title, start_date, end_date, type, level, status, short_description, full_description } = req.body;
+
+  if (!title || !start_date || !type || !level || !status) {
+    return res.status(400).json({ error: "Titre, date, type, niveau et statut requis." });
+  }
+
+  // Générer le slug depuis le titre
+  const slug = title
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  try {
+    await db.query(
+      `INSERT INTO rides (title, slug, start_date, end_date, type, level, status, short_description, full_description, created_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [title, slug, start_date, end_date || null, type, level, status, short_description || null, full_description || null, req.user.id]
+    );
+    res.status(201).json({ message: "Sortie créée avec succès." });
+  } catch (err) {
+    console.error("Erreur POST /ride :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// PUT /api/admin/ride/:id
+// Modifier une sortie
+// ─────────────────────────────────────────
+router.put("/ride/:id", authMiddleware, adminOnly, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  const { title, start_date, end_date, type, level, status, short_description, full_description } = req.body;
+
+  if (!title || !start_date || !type || !level || !status) {
+    return res.status(400).json({ error: "Titre, date, type, niveau et statut requis." });
+  }
+
+  const slug = title
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  try {
+    await db.query(
+      `UPDATE rides SET title=?, slug=?, start_date=?, end_date=?, type=?, level=?, status=?, short_description=?, full_description=?
+       WHERE id=?`,
+      [title, slug, start_date, end_date || null, type, level, status, short_description || null, full_description || null, id]
+    );
+    res.json({ message: "Sortie modifiée avec succès." });
+  } catch (err) {
+    console.error("Erreur PUT /ride :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// DELETE /api/admin/ride/:id
+// Supprimer une sortie
+// ─────────────────────────────────────────
+router.delete("/ride/:id", authMiddleware, adminOnly, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    await db.query("DELETE FROM rides WHERE id = ?", [id]);
+    res.json({ message: "Sortie supprimée." });
+  } catch (err) {
+    console.error("Erreur DELETE /ride :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 
 module.exports = router;
