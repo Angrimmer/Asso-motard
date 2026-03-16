@@ -204,5 +204,59 @@ router.patch("/photo/:id/reject", authMiddleware, adminOnly, async (req, res) =>
   }
 });
 
+// ─────────────────────────────────────────
+// GET /api/admin/ideas
+// Récupérer toutes les idées
+// ─────────────────────────────────────────
+router.get("/ideas", authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT i.id, i.title, i.content, i.status, i.created_at,
+              u.display_name as author
+       FROM ideas i
+       JOIN users u ON i.user_id = u.id
+       ORDER BY i.created_at DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur /ideas :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// PATCH /api/admin/idea/:id/done
+// Marquer une idée comme traitée
+// ─────────────────────────────────────────
+router.patch("/idea/:id/done", authMiddleware, adminOnly, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    await db.query("UPDATE ideas SET status = 'done' WHERE id = ?", [id]);
+    res.json({ message: "Idée marquée comme traitée." });
+  } catch (err) {
+    console.error("Erreur /idea/done :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// DELETE /api/admin/idea/:id
+// Supprimer une idée
+// ─────────────────────────────────────────
+router.delete("/idea/:id", authMiddleware, adminOnly, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    await db.query("DELETE FROM ideas WHERE id = ?", [id]);
+    res.json({ message: "Idée supprimée." });
+  } catch (err) {
+    console.error("Erreur /idea delete :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 
 module.exports = router;

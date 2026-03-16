@@ -175,5 +175,4 @@ document.addEventListener("DOMContentLoaded", function () {
   initLogout();
   initSelect();
   loadGalerie();
-  initDeleteButtons()
 });

@@ -130,12 +130,12 @@ router.get("/photos", authMiddleware, async (req, res) => {
     let rows;
     if (ride_id) {
       [rows] = await db.query(
-        "SELECT rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.ride_id = ? AND rp.is_approved = 1 ORDER BY rp.taken_at ASC",
+        "SELECT rp.id, rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.ride_id = ? AND rp.is_approved = 1 ORDER BY rp.taken_at ASC",
         [ride_id]
       );
     } else {
       [rows] = await db.query(
-        "SELECT rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.is_approved = 1 ORDER BY r.start_date DESC, rp.taken_at ASC"
+        "SELECT rp.id, rp.url, rp.caption, r.title as ride_title FROM ride_photos rp JOIN rides r ON rp.ride_id = r.id WHERE rp.is_approved = 1 ORDER BY r.start_date DESC, rp.taken_at ASC"
       );
     }
     res.json(rows);

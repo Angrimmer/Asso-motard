@@ -632,6 +632,97 @@ async function initGalleryPreview() {
   } catch {}
 }
 
+// ─────────────────────────────────────────
+// BOÎTE À IDÉES (admin/bureau)
+// ─────────────────────────────────────────
+async function initIdeasAdmin() {
+  const container = document.getElementById("ideas-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${API}/api/admin/ideas`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+
+    const ideas = await res.json();
+
+    if (ideas.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+    ideas.forEach(function (idea) {
+      const item = document.createElement("div");
+      item.className = "pending-photo-item" + (idea.status === "done" ? " idea-done" : "");
+      item.id = "idea-" + idea.id;
+      item.innerHTML =
+        '<div class="pending-photo-info">' +
+        '<span class="pending-photo-ride">' + idea.title + '</span>' +
+        '<span class="pending-photo-author">Par : ' + idea.author + ' — ' + new Date(idea.created_at).toLocaleDateString("fr-FR") + '</span>' +
+        '<span class="pending-photo-caption">' + idea.content + '</span>' +
+        '</div>' +
+        '<div class="pending-photo-actions">' +
+        (idea.status !== "done"
+          ? '<button class="pending-approve-btn" data-id="' + idea.id + '">✅ Traité</button>'
+          : '<span style="color:#9be59f; font-size:0.8rem;">✅ Traité</span>') +
+        '<button class="idea-delete-btn" data-id="' + idea.id + '">🗑 Supprimer</button>' +
+        '</div>';
+      container.appendChild(item);
+    });
+
+    initIdeasButtons(token);
+
+  } catch {
+    container.innerHTML = '<p style="color:red; font-size:0.9rem;">Erreur de chargement.</p>';
+  }
+}
+
+function initIdeasButtons(token) {
+  document.querySelectorAll(".pending-approve-btn[data-id]").forEach(function (btn) {
+    if (btn.closest("#ideas-list") === null) return;
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      try {
+        const res = await fetch(`${API}/api/admin/idea/${id}/done`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const item = document.getElementById("idea-" + id);
+          item.classList.add("idea-done");
+          btn.replaceWith(Object.assign(document.createElement("span"), {
+            style: "color:#9be59f; font-size:0.8rem;",
+            textContent: "✅ Traité"
+          }));
+        }
+      } catch {}
+    });
+  });
+
+  document.querySelectorAll(".idea-delete-btn").forEach(function (btn) {
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      if (!confirm("Supprimer cette idée définitivement ?")) return;
+      try {
+        const res = await fetch(`${API}/api/admin/idea/${id}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById("idea-" + id).remove();
+          const container = document.getElementById("ideas-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
+          }
+        }
+      } catch {}
+    });
+  });
+}
 
 
 // ─────────────────────────────────────────
@@ -647,5 +738,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initMemberUploadForm();
   initPendingPhotos();
   initGalleryPreview();
+  initIdeasAdmin();
 });
 
