@@ -158,6 +158,58 @@
   border: 1px solid var(--border-soft);
 }
 
+.ride-feedback {
+  padding: 2rem 3rem 3rem;
+  background: #050d1b;
+}
+
+.ride-feedback h2 {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.2rem;
+}
+
+.feedback-card {
+  background: rgba(5, 18, 34, 0.95);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.feedback-author {
+  font-weight: 700;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.feedback-stars {
+  color: var(--accent);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.feedback-date {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-left: auto;
+}
+
+.feedback-comment {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 
 /* Responsive */
 

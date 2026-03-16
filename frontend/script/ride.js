@@ -31,13 +31,13 @@ async function initRidePage() {
   const idParam = params.get("id");
   const id = idParam ? parseInt(idParam, 10) : NaN;
 
-  const titleEl   = document.getElementById("ride-title");
-  const metaEl    = document.getElementById("ride-meta");
-  const dateEl    = document.getElementById("ride-date");
-  const typeEl    = document.getElementById("ride-type");
-  const levelEl   = document.getElementById("ride-level");
-  const statusEl  = document.getElementById("ride-status");
-  const descEl    = document.getElementById("ride-description");
+  const titleEl  = document.getElementById("ride-title");
+  const metaEl   = document.getElementById("ride-meta");
+  const dateEl   = document.getElementById("ride-date");
+  const typeEl   = document.getElementById("ride-type");
+  const levelEl  = document.getElementById("ride-level");
+  const statusEl = document.getElementById("ride-status");
+  const descEl   = document.getElementById("ride-description");
   const galleryEl = document.getElementById("ride-gallery");
 
   if (!idParam || isNaN(id)) {
@@ -46,7 +46,6 @@ async function initRidePage() {
     return;
   }
 
-  // Chargement depuis l'API
   try {
     const token = localStorage.getItem("token");
     const res = await fetch(`${API}/api/member/ride/${id}`, {
@@ -62,14 +61,15 @@ async function initRidePage() {
     const ride = await res.json();
 
     // Remplissage
-    if (titleEl)  titleEl.textContent  = ride.title;
-    if (dateEl)   dateEl.textContent   = ride.start_date ? new Date(ride.start_date).toLocaleDateString("fr-FR") : "–";
-    if (typeEl)   typeEl.textContent   = ride.type;
-    if (levelEl)  levelEl.textContent  = ride.level;
-    const statusLabels = { upcoming: "Inscriptions ouvertes", planned: "Prévue", past: "Terminé" };
-      if (statusEl) statusEl.textContent = statusLabels[ride.status] || ride.status;
+    if (titleEl) titleEl.textContent = ride.title;
+    if (dateEl)  dateEl.textContent  = ride.start_date ? new Date(ride.start_date).toLocaleDateString("fr-FR") : "–";
+    if (typeEl)  typeEl.textContent  = ride.type;
+    if (levelEl) levelEl.textContent = ride.level;
 
-    if (metaEl)   metaEl.textContent   = [
+    const statusLabels = { upcoming: "Inscriptions ouvertes", planned: "Prévue", past: "Terminé" };
+    if (statusEl) statusEl.textContent = statusLabels[ride.status] || ride.status;
+
+    if (metaEl) metaEl.textContent = [
       ride.start_date ? new Date(ride.start_date).toLocaleDateString("fr-FR") : null,
       ride.type,
       ride.level
@@ -93,7 +93,7 @@ async function initRidePage() {
         ride.photos.forEach(photo => {
           const item = document.createElement("div");
           item.className = "ride-gallery-item";
-          item.innerHTML = '<img src="' + photo.url + '" alt="' + (photo.caption || "Photo de la sortie") + '" />';
+          item.innerHTML = '<img src="' + API + photo.url + '" alt="' + (photo.caption || "Photo de la sortie") + '" />';
           galleryEl.appendChild(item);
         });
       } else {
@@ -106,6 +106,7 @@ async function initRidePage() {
     }
 
     initRideLightbox();
+    initRideFeedback(id);
 
   } catch {
     if (titleEl) titleEl.textContent = "Erreur de chargement";
@@ -138,7 +139,9 @@ function initRideLightbox() {
   });
 }
 
-// Deconnexion button
+// ─────────────────────────────────────────
+// DÉCONNEXION
+// ─────────────────────────────────────────
 function initLogout() {
   const btn = document.getElementById("logout-btn");
   if (!btn) return;
@@ -148,6 +151,51 @@ function initLogout() {
   });
 }
 
+// ─────────────────────────────────────────
+// AVIS SUR LA SORTIE
+// ─────────────────────────────────────────
+async function initRideFeedback(rideId) {
+  const container = document.getElementById("ride-feedback-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${API}/api/member/ride/${rideId}/feedback`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      container.innerHTML = '<p style="color:var(--text-muted);">Impossible de charger les avis.</p>';
+      return;
+    }
+
+    const feedbacks = await res.json();
+
+    if (feedbacks.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucun avis pour cette sortie.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+    feedbacks.forEach(function (fb) {
+      const stars = "★".repeat(fb.rating) + "☆".repeat(5 - fb.rating);
+      const card = document.createElement("div");
+      card.className = "feedback-card";
+      card.innerHTML =
+        '<div class="feedback-header">' +
+        '<span class="feedback-author">' + fb.author + '</span>' +
+        '<span class="feedback-stars">' + stars + '</span>' +
+        '<span class="feedback-date">' + new Date(fb.created_at).toLocaleDateString("fr-FR") + '</span>' +
+        '</div>' +
+        '<p class="feedback-comment">' + fb.comment + '</p>';
+      container.appendChild(card);
+    });
+
+  } catch {
+    container.innerHTML = '<p style="color:var(--text-muted);">Erreur réseau.</p>';
+  }
+}
 
 // ─────────────────────────────────────────
 // INIT

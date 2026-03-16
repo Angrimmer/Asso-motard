@@ -197,5 +197,31 @@ router.post("/upload-photo", authMiddleware, upload.array("photos", 10), async (
   }
 });
 
+// ─────────────────────────────────────────
+// GET /api/member/ride/:id/feedback
+// Avis sur une sortie
+// ─────────────────────────────────────────
+router.get("/ride/:id/feedback", authMiddleware, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
+
+  try {
+    const [rows] = await db.query(
+      `SELECT rf.rating, rf.comment, rf.created_at,
+              u.display_name as author
+       FROM ride_feedback rf
+       JOIN users u ON rf.user_id = u.id
+       WHERE rf.ride_id = ?
+       ORDER BY rf.created_at DESC`,
+      [id]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur /ride/feedback :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+
 
 module.exports = router;
