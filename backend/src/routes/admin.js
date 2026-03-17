@@ -242,18 +242,18 @@ router.patch("/idea/:id/done", authMiddleware, adminOnly, async (req, res) => {
 });
 
 // ─────────────────────────────────────────
-// DELETE /api/admin/idea/:id
-// Supprimer une idée
+// PATCH /api/admin/idea/:id/reject
+// refuser
 // ─────────────────────────────────────────
-router.delete("/idea/:id", authMiddleware, adminOnly, async (req, res) => {
+router.patch("/idea/:id/reject", authMiddleware, adminOnly, async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) return res.status(400).json({ error: "ID invalide." });
 
   try {
-    await db.query("DELETE FROM ideas WHERE id = ?", [id]);
-    res.json({ message: "Idée supprimée." });
+    await db.query("UPDATE ideas SET status = 'refusée' WHERE id = ?", [id]);
+    res.json({ message: "Idée refusée." });
   } catch (err) {
-    console.error("Erreur /idea delete :", err);
+    console.error("Erreur /idea/reject :", err);
     res.status(500).json({ error: "Erreur serveur." });
   }
 });

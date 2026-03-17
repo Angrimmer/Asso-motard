@@ -669,7 +669,8 @@ async function initIdeasAdmin() {
         (idea.status !== "done"
           ? '<button class="pending-approve-btn" data-id="' + idea.id + '">✅ Traité</button>'
           : '<span style="color:#9be59f; font-size:0.8rem;">✅ Traité</span>') +
-        '<button class="idea-delete-btn" data-id="' + idea.id + '">🗑 Supprimer</button>' +
+        '<button class="idea-reject-btn" data-id="' + idea.id + '">❌ Refuser</button>'
+ +
         '</div>';
       container.appendChild(item);
     });
@@ -703,26 +704,68 @@ function initIdeasButtons(token) {
     });
   });
 
-  document.querySelectorAll(".idea-delete-btn").forEach(function (btn) {
-    btn.addEventListener("click", async function () {
-      const id = btn.dataset.id;
-      if (!confirm("Supprimer cette idée définitivement ?")) return;
-      try {
-        const res = await fetch(`${API}/api/admin/idea/${id}`, {
-          method: "DELETE",
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) {
-          document.getElementById("idea-" + id).remove();
-          const container = document.getElementById("ideas-list");
-          if (!container.querySelector(".pending-photo-item")) {
-            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
-          }
+  document.querySelectorAll(".idea-reject-btn").forEach(function (btn) {
+  btn.addEventListener("click", async function () {
+    const id = btn.dataset.id;
+    if (!confirm("Refuser cette idée ?")) return;
+    try {
+      const res = await fetch(`${API}/api/admin/idea/${id}/reject`, {
+        method: "PATCH",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
+        document.getElementById("idea-" + id).remove();
+        const container = document.getElementById("ideas-list");
+        if (!container.querySelector(".pending-photo-item")) {
+          container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
         }
-      } catch {}
-    });
+      }
+    } catch {}
   });
+});
 }
+
+// notifications pour les idées traitées
+async function checkIdeaNotifications() {
+  const token = localStorage.getItem('token');
+  try {
+    const res = await fetch(`${API}/api/member/ideas/notifications`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.length > 0) {
+      // Marquer comme lu
+      await fetch(`${API}/api/member/ideas/notifications/read`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      // Afficher l'alerte
+      const msg = data.length === 1
+        ? `💡 Votre idée "${data[0].title}" a été traitée par le bureau.`
+        : `💡 ${data.length} de vos idées ont été traitées par le bureau.`;
+
+      showNotificationBanner(msg);
+    }
+  } catch (err) {
+    console.error('Erreur notifications idées :', err);
+  }
+}
+
+function showNotificationBanner(message) {
+  const banner = document.createElement('div');
+  banner.className = 'notif-banner';
+  banner.textContent = message;
+  document.body.appendChild(banner);
+
+  setTimeout(() => banner.classList.add('notif-banner--visible'), 100);
+  setTimeout(() => {
+    banner.classList.remove('notif-banner--visible');
+    setTimeout(() => banner.remove(), 400);
+  }, 5000);
+}
+
 
 // ─────────────────────────────────────────
 // GESTION DES SORTIES (admin/bureau)
@@ -927,5 +970,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initGalleryPreview();
   initIdeasAdmin();
   initRidesAdmin();
+  checkIdeaNotifications()
 });
 

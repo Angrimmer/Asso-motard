@@ -261,6 +261,29 @@
   color: var(--text-muted);
 }
 
+.notif-banner {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(5, 18, 34, 0.97);
+  border: 1px solid var(--accent);
+  color: var(--text-light);
+  padding: 1rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  max-width: 360px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+}
+
+.notif-banner--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 /* Galeries */
 
 .members-gallery-list {

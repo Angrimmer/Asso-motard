@@ -18,7 +18,7 @@ router.post("/idea", authMiddleware, async (req, res) => {
 
   try {
     await db.query(
-      "INSERT INTO ideas (user_id, title, content, status) VALUES (?, ?, ?, 'pending')",
+      "INSERT INTO ideas (user_id, title, content, status) VALUES (?, ?, ?, 'nouvelle')",
       [user_id, title, content]
     );
     res.status(201).json({ message: "Votre idée a bien été envoyée au bureau !" });
@@ -27,6 +27,33 @@ router.post("/idea", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Erreur serveur." });
   }
 });
+
+// Notifications d'idées traitées
+router.get('/ideas/notifications', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT id, title FROM ideas WHERE user_id = ? AND status IN ('done', 'refusée') AND notified = 0",
+      [req.user.id]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+router.post('/ideas/notifications/read', authMiddleware, async (req, res) => {
+  try {
+    await db.query(
+      "DELETE FROM ideas WHERE user_id = ? AND status IN ('done', 'refusée') AND notified = 0",
+      [req.user.id]
+    );
+    res.json({ message: 'ok' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
 
 // ─────────────────────────────────────────
 // POST /api/member/feedback
