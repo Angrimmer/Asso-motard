@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <title>Association Motards - Les Fêlés du Bocal</title>
     <meta name="description" content="Association de motards basée en Lot-et-Garonne, proposant balades, participaation à des événements caritatifs et accompagnement des nouveaux motards." />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Police style comics (exemple Google Fonts) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- Police style comics -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"/>
-    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="stylesheet" href="/style/style.css"/>
     <script src="script/script.js" defer></script>
+    <link rel="icon" href="src/img/Logo.png"/>
   </head>
   <body>
     <div class="page">
@@ -17,7 +18,7 @@
         <nav class="nav">
           <div class="logo">
             <!-- Emplacement logo -->
-            <div class="logo-placeholder">LOGO</div>
+            <img src="src/img/Logo.png" alt="Logo de l'association" class="logo-img"/>
             <span>Les Fêlés du Bocal</span>
           </div>
           <div class="nav-links">
@@ -79,30 +80,22 @@
 
           <div class="values-grid">
             <article class="value-card">
-              <div class="value-photo placeholder-photo">Photo balade</div>
+              <img src="src/img/Balade.jpg" alt="Photo balade" class="value-photo">
               <h3>Joie des balades</h3>
-              <p>
-                Albums photos des sorties, road trips et moments de partage sur
-                les routes, pour revivre chaque virage ensemble.
-              </p>
+              <p>Albums photos des sorties, road trips et moments de partage sur les routes, pour revivre chaque virage ensemble.</p>
+            </article>
+              
+
+            <article class="value-card">
+              <img src="src/img/Caritatif.jpg" alt="Photo caritative les Pères Noëls" class="value-photo">
+              <h3>Virées caritatives</h3>
+              <p>Participation aux actions solidaires locales, rassemblements et collectes au profit d’associations et d’actions humanitaires.</p>
             </article>
 
             <article class="value-card">
-              <div class="value-photo placeholder-photo">Photo caritatif</div>
-              <h3>Événements caritatifs</h3>
-              <p>
-                Participation aux actions solidaires locales, rassemblements et
-                collectes au profit d’associations et d’actions humanitaires.
-              </p>
-            </article>
-
-            <article class="value-card">
-              <div class="value-photo placeholder-photo">Photo entraide</div>
+              <img src="src/img/entraide.jpg" alt="Photo caritative les Pères Noëls" class="value-photo">
               <h3>Entraide & accompagnement</h3>
-              <p>
-                Reprise de guidon, accompagnement des nouveaux motards, conseils
-                et roulages encadrés pour progresser en sécurité.
-              </p>
+              <p>Reprise de guidon, accompagnement des nouveaux motards, conseils et virées encadrées pour progresser en sécurité. Moments conviviaux et partagés en bonus !</p>
             </article>
           </div>
         </section>
@@ -157,40 +150,39 @@
             <div class="section-kicker">Adhésion</div>
             <h2 class="section-title">Rejoindre Les Fêlés du Bocal</h2>
           </div>
-
+        
           <div class="membership-layout">
             <div class="membership-text">
               <p>
-                L’association est ouverte à tous, sur adhésion annuelle.
-                L’adhésion comprend les balades organisées, la participation aux
-                événements caritatifs, l’accès aux comptes rendus détaillés
-                ainsi qu’à l’accompagnement pour les nouveaux motards.
+                L'association est ouverte à tous, sur adhésion annuelle. L'adhésion
+                comprend les balades organisées, la participation aux événements
+                caritatifs, l'accès aux comptes rendus détaillés ainsi qu'à
+                l'accompagnement pour les nouveaux motards.
               </p>
               <p>
-                Prix de l’adhésion : <strong>à renseigner ici</strong> (par
-                exemple, tarif pilote / passager). La carte d’adhérent sera
-                présentée et téléchargeable sur cette page.
+                Prix de l'adhésion : <strong>à renseigner ici</strong> (par exemple,
+                tarif pilote / passager). La carte d'adhérent sera présentée et
+                téléchargeable sur cette page.
               </p>
-
+            
               <ul class="membership-list">
-                <li>
-                  Carte d’adhérent : visuel de la carte, infos essentielles.
-                </li>
-                <li>
-                  Formulaire d’adhésion (PDF à télécharger ou formulaire en
-                  ligne).
-                </li>
-                <li>
-                  Rappel des valeurs : respect, entraide, partage, fraternité.
-                </li>
+                >Carte d'adhérent : visuel de la carte, infos essentielles.</li><br>
+                >Formulaire d'adhésion (PDF à télécharger ou formulaire en ligne).</li><br>
+                >Rappel des valeurs : respect, entraide, partage, fraternité.</li><br>
               </ul>
             </div>
-
-            <div class="membership-card placeholder-card">
-              Emplacement carte d’adhérent
+              
+            <div class="membership-card iframe-card">
+              <iframe
+                src="src/img/Liste-tableaux-des-calories-dans-les-aliments-PDF.pdf"
+                width="100%"
+                height="100%"
+                style="border: none; border-radius: 12px;">
+              </iframe>
             </div>
           </div>
         </section>
+          
 
         <!-- CONTACT / INFOS LÉGALES -->
         <section id="contact" class="contact">

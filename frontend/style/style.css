@@ -70,11 +70,10 @@ header {
   letter-spacing: 0.08em;
 }
 
-.logo-placeholder {
+.logo-img {
   width: 40px;
   height: 40px;
   border-radius: 6px;
-  border: 2px dashed var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +227,7 @@ section {
 
 .hero-right {
   position: relative;
-  background: url("https://images.pexels.com/photos/2101187/pexels-photo-2101187.jpeg")
+  background: url("../src/img/logo.png")
     center center / cover no-repeat;
   display: flex;
   align-items: flex-end;
@@ -276,18 +275,11 @@ section {
 }
 
 .value-photo {
-  border-radius: 10px;
-  margin-bottom: 0.8rem;
-  height: 150px;
-}
-
-.placeholder-photo {
-  border: 1px dashed var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+ width: 100%;
+  aspect-ratio: 4/3; 
+  object-fit: cover;
+  border-radius: 8px; 
+  display: block;
 }
 
 .value-card h3 {
@@ -340,15 +332,15 @@ section {
 }
 
 .membership-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  display: flex;
   gap: 2rem;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .membership-text {
   color: var(--text-muted);
   font-size: 0.95rem;
+  flex: 1;
 }
 
 .membership-text p {
@@ -366,12 +358,11 @@ section {
 }
 
 .membership-card {
-  height: 220px;
-  border-radius: 12px;
+  flex: 1;
+  height: 350px;
 }
 
-.placeholder-card {
-  border: 2px dashed var(--accent);
+.iframe-card {
   display: flex;
   align-items: center;
   justify-content: center;

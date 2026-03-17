@@ -318,5 +318,16 @@ router.get("/ride/:id/is-registered", authMiddleware, async (req, res) => {
   }
 });
 
+// Compteur de membres
+router.get('/count', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT COUNT(*) as count FROM users');
+    res.json({ count: rows[0].count });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ count: 0 });
+  }
+});
+
 
 module.exports = router;

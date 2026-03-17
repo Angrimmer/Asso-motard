@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/style/style.css"/>
     <link rel="stylesheet" href="/style/membres.css"/>
     <script src="/script/membres.js" defer></script>
+    <link rel="icon" href="src/img/Logo.png"/>
   </head>
 
   <body>
@@ -19,7 +20,7 @@
       <header>
         <nav class="nav">
           <div class="logo">
-            <div class="logo-placeholder">LOGO</div>
+            <img src="src/img/Logo.png" alt="Logo de l'association" class="logo-img"/>
             <span>Les Fêlés du Bocal</span>
           </div>
           <div class="nav-links">
@@ -115,124 +116,159 @@
             </div>
 
             <!-- BLOC ADMIN / BUREAU — caché par défaut -->
-            <div id="admin-block" class="members-grid" style="display:none;">
-              <article class="members-block">
-                <h3>🛡️ Créer un compte membre</h3>
-                <p>Renseignez les informations du nouveau membre. Un email d'activation lui sera envoyé automatiquement.</p>
-                <form class="simple-form" id="create-user-form">
-                  <label for="new-email">Email</label>
-                  <input type="email" id="new-email" placeholder="membre@exemple.com" required />
-
-                  <label for="new-name">Nom affiché</label>
-                  <input type="text" id="new-name" placeholder="Prénom Nom" required />
-
-                  <label for="new-role">Rôle</label>
-                  <select id="new-role">
-                    <option value="member">Membre</option>
-                    <option value="bureau">Bureau</option>
-                    <option value="admin">Admin</option>
-                  </select>
-
-                  <p id="create-user-msg" style="display:none; margin-top:10px;"></p>
-                  <button type="submit">Envoyer l'invitation</button>
-                </form>
-              </article>
-              <article class="admin-block">
-                <h3>Dépôt de photos</h3>
-                <p>Ajoutez des photos de balades. Elles seront publiées immédiatement.</p>
-                <form class="simple-form" id="upload-photo-form" enctype="multipart/form-data">
-              
-                  <label for="upload-ride-select">Sortie concernée</label>
-                  <select id="upload-ride-select" required>
-                    <option value="">Choisir une sortie…</option>
-                  </select>
-              
-                  <label for="upload-caption">Légende (optionnel)</label>
-                  <input type="text" id="upload-caption" placeholder="Ex : Pause au sommet des Vosges" />
-              
-                  <label for="photo-upload-admin">Sélectionner des photos</label>
-                  <input id="photo-upload-admin" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
-              
-                  <button type="submit">Publier les photos</button>
-                  <p id="upload-photo-msg" style="display:none; margin-top:0.5rem;"></p>
-                </form>
-              </article>
-              <article class="admin-block">
-                <h3>Photos en attente de validation</h3>
-                <div id="pending-photos-list">
-                  <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
-                </div>
-              </article>
-              <article class="admin-block">
-                <h3>💡 Boîte à idées</h3>
-                <div id="ideas-list">
-                  <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
-                </div>
-              </article>
-              
-              <article class="admin-block">
-                <h3>🏍️ Gestion des sorties</h3>
-              
-                <!-- Formulaire création/édition -->
-                <form class="simple-form" id="ride-form">
-                  <input type="hidden" id="ride-edit-id" value="" />
-              
-                  <label for="ride-title-input">Titre</label>
-                  <input type="text" id="ride-title-input" placeholder="Ex : Route des Crêtes" required />
-              
-                  <label for="ride-start-date">Date de début</label>
-                  <input type="date" id="ride-start-date" required />
-              
-                  <label for="ride-end-date">Date de fin (optionnel)</label>
-                  <input type="date" id="ride-end-date" />
-              
-                  <label for="ride-type-select">Type</label>
-                  <select id="ride-type-select" required>
-                    <option value="">-- Choisir --</option>
-                    <option value="Balade journée">Balade journée</option>
-                    <option value="Soirée">Soirée</option>
-                    <option value="Road trip">Road trip</option>
-                    <option value="Caritatif">Caritatif</option>
-                  </select>
-              
-                  <label for="ride-level-select">Niveau</label>
-                  <select id="ride-level-select" required>
-                    <option value="">-- Choisir --</option>
-                    <option value="Tous niveaux">Tous niveaux</option>
-                    <option value="Débutant">Débutant</option>
-                    <option value="Débutant +">Débutant +</option>
-                    <option value="Intermédiaire">Intermédiaire</option>
-                    <option value="Confirmé">Confirmé</option>
-                  </select>
-              
-                  <label for="ride-status-select">Statut</label>
-                  <select id="ride-status-select" required>
-                    <option value="">-- Choisir --</option>
-                    <option value="upcoming">Inscriptions ouvertes</option>
-                    <option value="planned">Prévue</option>
-                    <option value="past">Terminé</option>
-                  </select>
-              
-                  <label for="ride-short-desc">Description courte (optionnel)</label>
-                  <textarea id="ride-short-desc" placeholder="Résumé en une phrase…"></textarea>
-              
-                  <label for="ride-full-desc">Compte rendu complet (optionnel)</label>
-                  <textarea id="ride-full-desc" placeholder="Compte rendu détaillé de la sortie…" rows="5"></textarea>
-              
-                  <div style="display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:0.3rem;">
-                    <button type="submit" id="ride-submit-btn">➕ Créer la sortie</button>
-                    <button type="button" id="ride-cancel-btn" style="display:none; background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Annuler</button>
+            <div id="admin-block" style="display:none;">
+            
+              <!-- Sidebar navigation -->
+              <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-panel="panel-rides">🏍️ Sorties</button>
+                <button class="admin-nav-btn" data-panel="panel-photos">📸 Photos</button>
+                <button class="admin-nav-btn" data-panel="panel-ideas">💡 Idées</button>
+                <button class="admin-nav-btn" data-panel="panel-users">🛡️ Membres</button>
+              </nav>
+            
+              <!-- Panneaux -->
+              <div class="admin-panels">
+            
+                <!-- Panel Sorties -->
+                <div class="admin-panel active" id="panel-rides">
+                  <div class="admin-panel-header">
+                    <h3>🏍️ Gestion des sorties</h3>
                   </div>
-                  <p id="ride-form-msg" style="display:none; margin-top:0.5rem;"></p>
-                </form>
-              
-                <!-- Liste des sorties existantes -->
-                <div id="rides-admin-list" style="margin-top:1.5rem;">
-                  <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                  <div class="admin-panel-body">
+                    <div class="admin-two-col">
+                      <!-- Formulaire -->
+                      <div class="admin-form-col">
+                        <h4 id="ride-form-title">Créer une sortie</h4>
+                        <form class="simple-form" id="ride-form">
+                          <input type="hidden" id="ride-edit-id" value="" />
+                          <label for="ride-title-input">Titre</label>
+                          <input type="text" id="ride-title-input" placeholder="Ex : Route des Crêtes" required />
+                          <label for="ride-start-date">Date de début</label>
+                          <input type="date" id="ride-start-date" required />
+                          <label for="ride-end-date">Date de fin (optionnel)</label>
+                          <input type="date" id="ride-end-date" />
+                          <label for="ride-type-select">Type</label>
+                          <select id="ride-type-select" required>
+                            <option value="">-- Choisir --</option>
+                            <option value="Balade journée">Balade journée</option>
+                            <option value="Soirée">Soirée</option>
+                            <option value="Road trip">Road trip</option>
+                            <option value="Caritatif">Caritatif</option>
+                          </select>
+                          <label for="ride-level-select">Niveau</label>
+                          <select id="ride-level-select" required>
+                            <option value="">-- Choisir --</option>
+                            <option value="Tous niveaux">Tous niveaux</option>
+                            <option value="Débutant">Débutant</option>
+                            <option value="Débutant +">Débutant +</option>
+                            <option value="Intermédiaire">Intermédiaire</option>
+                            <option value="Confirmé">Confirmé</option>
+                          </select>
+                          <label for="ride-status-select">Statut</label>
+                          <select id="ride-status-select" required>
+                            <option value="">-- Choisir --</option>
+                            <option value="upcoming">Inscriptions ouvertes</option>
+                            <option value="planned">Prévue</option>
+                            <option value="past">Terminé</option>
+                          </select>
+                          <label for="ride-short-desc">Description courte (optionnel)</label>
+                          <textarea id="ride-short-desc" placeholder="Résumé en une phrase…"></textarea>
+                          <label for="ride-full-desc">Compte rendu complet (optionnel)</label>
+                          <textarea id="ride-full-desc" placeholder="Compte rendu détaillé de la sortie…" rows="5"></textarea>
+                          <div style="display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:0.3rem;">
+                            <button type="submit" id="ride-submit-btn">➕ Créer la sortie</button>
+                            <button type="button" id="ride-cancel-btn" style="display:none; background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Annuler</button>
+                          </div>
+                          <p id="ride-form-msg" style="display:none; margin-top:0.5rem;"></p>
+                        </form>
+                      </div>
+                      <!-- Liste -->
+                      <div class="admin-list-col">
+                        <h4>Sorties existantes</h4>
+                        <div id="rides-admin-list">
+                          <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </article>
-                
+            
+                <!-- Panel Photos -->
+                <div class="admin-panel" id="panel-photos">
+                  <div class="admin-panel-header">
+                    <h3>📸 Gestion des photos</h3>
+                  </div>
+                  <div class="admin-panel-body">
+                    <div class="admin-two-col">
+                      <!-- Upload -->
+                      <div class="admin-form-col">
+                        <h4>Publier des photos</h4>
+                        <form class="simple-form" id="upload-photo-form" enctype="multipart/form-data">
+                          <label for="upload-ride-select">Sortie concernée</label>
+                          <select id="upload-ride-select" required>
+                            <option value="">Choisir une sortie…</option>
+                          </select>
+                          <label for="upload-caption">Légende (optionnel)</label>
+                          <input type="text" id="upload-caption" placeholder="Ex : Pause au sommet des Vosges" />
+                          <label for="photo-upload-admin">Sélectionner des photos</label>
+                          <input id="photo-upload-admin" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
+                          <button type="submit">Publier les photos</button>
+                          <p id="upload-photo-msg" style="display:none; margin-top:0.5rem;"></p>
+                        </form>
+                      </div>
+                      <!-- En attente -->
+                      <div class="admin-list-col">
+                        <h4>Photos en attente de validation</h4>
+                        <div id="pending-photos-list">
+                          <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Panel Idées -->
+                <div class="admin-panel" id="panel-ideas">
+                  <div class="admin-panel-header">
+                    <h3>💡 Boîte à idées</h3>
+                  </div>
+                  <div class="admin-panel-body">
+                    <div id="ideas-list">
+                      <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Panel Membres -->
+                <div class="admin-panel" id="panel-users">
+                  <div class="admin-panel-header">
+                    <h3>🛡️ Gestion des membres</h3>
+                  </div>
+                  <div class="admin-panel-body">
+                    <h4>Créer un compte membre</h4>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.8rem;">
+                      Renseignez les informations du nouveau membre. Un email d'activation lui sera envoyé automatiquement.
+                    </p>
+                    <form class="simple-form" id="create-user-form" style="max-width:420px;">
+                      <label for="new-email">Email</label>
+                      <input type="email" id="new-email" placeholder="membre@exemple.com" required />
+                      <label for="new-name">Nom affiché</label>
+                      <input type="text" id="new-name" placeholder="Prénom Nom" required />
+                      <label for="new-role">Rôle</label>
+                      <select id="new-role">
+                        <option value="member">Membre</option>
+                        <option value="bureau">Bureau</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <p id="create-user-msg" style="display:none; margin-top:10px;"></p>
+                      <button type="submit">Envoyer l'invitation</button>
+                    </form>
+                  </div>
+                </div>
+            
+              </div>
             </div>
+            
 
             <p class="members-note">
               Remarque : les fonctionnalités de dépôt de photos et de boîte à idées sont accessibles à tous les membres, mais les contenus soumis sont modérés par le bureau avant publication. Les avis sur les sorties sont visibles uniquement par le bureau pour améliorer l'organisation des futures balades.

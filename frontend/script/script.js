@@ -18,7 +18,7 @@ function animateCounter(el, target) {
 // 1) Compteur MEMBERS (données du site apparaissant dans la Page d’accueil)
 const membersEl = document.getElementById("members-counter");
   if (membersEl) {
-    fetch("/api/membres/count") // URL à adapter selon ton hébergeur
+    fetch("http://localhost:4000/api/member/count") 
       .then((res) => res.json())
       .then((data) => {
       const total = parseInt(data.count, 10) || 0;
