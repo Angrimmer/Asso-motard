@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link rel="stylesheet" href="style/style.css"/>
   <link rel="stylesheet" href="style/ride.css"/>
+  <script src="script/script.js" defer></script>
   <script src="script/ride.js" defer></script>
   <link rel="icon" href="src/img/Logo.png"/>
 </head>
@@ -18,7 +19,7 @@
           <img src="src/img/Logo.png" alt="Logo de l'association" class="logo-img"/>
           <span>Les Fêlés du Bocal</span>
         </div>
-        <div class="nav-links">
+        <div class="nav-links" id="nav-links">
           <a href="index.html#home">Accueil</a>
           <a href="index.html#values">Esprit motard</a>
           <a href="index.html#events">Sorties</a>
@@ -26,6 +27,12 @@
           <a href="index.html#contact">Contact</a>
         </div>
         <button id="logout-btn" class="nav-cta">Se déconnecter</button>
+
+        <button class="burger" id="burger-btn" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </nav>
     </header>
 
