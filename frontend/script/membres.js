@@ -648,16 +648,17 @@ async function initIdeasAdmin() {
     if (!res.ok) return;
 
     const ideas = await res.json();
+    const pending = ideas.filter(idea => idea.status === "nouvelle"); 
 
-    if (ideas.length === 0) {
+    if (pending.length === 0) { 
       container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
       return;
     }
 
     container.innerHTML = "";
-    ideas.forEach(function (idea) {
+    pending.forEach(function (idea) { 
       const item = document.createElement("div");
-      item.className = "pending-photo-item" + (idea.status === "done" ? " idea-done" : "");
+      item.className = "pending-photo-item"; 
       item.id = "idea-" + idea.id;
       item.innerHTML =
         '<div class="pending-photo-info">' +
@@ -666,16 +667,14 @@ async function initIdeasAdmin() {
         '<span class="pending-photo-caption">' + idea.content + '</span>' +
         '</div>' +
         '<div class="pending-photo-actions">' +
-        (idea.status !== "done"
-          ? '<button class="pending-approve-btn" data-id="' + idea.id + '">✅ Traité</button>'
-          : '<span style="color:#9be59f; font-size:0.8rem;">✅ Traité</span>') +
-        '<button class="idea-reject-btn" data-id="' + idea.id + '">❌ Refuser</button>'
- +
+        '<button class="pending-approve-btn" data-id="' + idea.id + '">✅ Traité</button>' + // ← plus besoin du ternaire non plus
+        '<button class="idea-reject-btn" data-id="' + idea.id + '">❌ Refuser</button>' +
         '</div>';
       container.appendChild(item);
     });
 
     initIdeasButtons(token);
+
 
   } catch {
     container.innerHTML = '<p style="color:red; font-size:0.9rem;">Erreur de chargement.</p>';
@@ -693,37 +692,37 @@ function initIdeasButtons(token) {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (res.ok) {
-          const item = document.getElementById("idea-" + id);
-          item.classList.add("idea-done");
-          btn.replaceWith(Object.assign(document.createElement("span"), {
-            style: "color:#9be59f; font-size:0.8rem;",
-            textContent: "✅ Traité"
-          }));
+          document.getElementById("idea-" + id).remove(); // ← remplace classList.add + replaceWith
+          const container = document.getElementById("ideas-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
+          }
         }
       } catch {}
     });
   });
 
   document.querySelectorAll(".idea-reject-btn").forEach(function (btn) {
-  btn.addEventListener("click", async function () {
-    const id = btn.dataset.id;
-    if (!confirm("Refuser cette idée ?")) return;
-    try {
-      const res = await fetch(`${API}/api/admin/idea/${id}/reject`, {
-        method: "PATCH",
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (res.ok) {
-        document.getElementById("idea-" + id).remove();
-        const container = document.getElementById("ideas-list");
-        if (!container.querySelector(".pending-photo-item")) {
-          container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
+    btn.addEventListener("click", async function () {
+      const id = btn.dataset.id;
+      if (!confirm("Refuser cette idée ?")) return;
+      try {
+        const res = await fetch(`${API}/api/admin/idea/${id}/reject`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          document.getElementById("idea-" + id).remove();
+          const container = document.getElementById("ideas-list");
+          if (!container.querySelector(".pending-photo-item")) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">Aucune idée soumise.</p>';
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    });
   });
-});
 }
+
 
 // notifications pour les idées traitées
 async function checkIdeaNotifications() {
