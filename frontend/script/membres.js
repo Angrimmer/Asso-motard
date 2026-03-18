@@ -675,7 +675,6 @@ async function initIdeasAdmin() {
 
     initIdeasButtons(token);
 
-
   } catch {
     container.innerHTML = '<p style="color:red; font-size:0.9rem;">Erreur de chargement.</p>';
   }
