@@ -38,4 +38,30 @@ async function sendActivationEmail(email, display_name, token) {
   });
 }
 
-module.exports = { sendActivationEmail };
+async function sendResetPasswordEmail(email, display_name, token) {
+  const lien = `${process.env.FRONTEND_URL}/definir-mot-de-passe.html?token=${token}&mode=reset`;
+
+  await transporter.sendMail({
+    from: `"Les Fêlés du Bocal" <${process.env.MAIL_USER}>`,
+    to: email,
+    subject: "Réinitialisation de votre mot de passe",
+    html: `
+      <h2>Bonjour ${display_name} !</h2>
+      <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
+      <p>Cliquez sur le lien ci-dessous pour en définir un nouveau :</p>
+      <a href="${lien}" style="
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #e63946;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+      ">Réinitialiser mon mot de passe</a>
+      <p><small>Ce lien expire dans 30 minutes.</small></p>
+      <p><small>Si vous n'avez pas fait cette demande, ignorez cet email.</small></p>
+    `,
+  });
+}
+
+module.exports = { sendActivationEmail, sendResetPasswordEmail }; 

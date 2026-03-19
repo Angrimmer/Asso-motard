@@ -2,6 +2,8 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../db");
+const crypto = require("crypto"); 
+const { sendResetPasswordEmail } = require("../mailer");
 
 const router = express.Router();
 
@@ -171,6 +173,78 @@ router.post("/change-password", async (req, res) => {
 
   } catch (err) {
     console.error("Erreur /change-password :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// POST /api/auth/forgot-password
+// ─────────────────────────────────────────
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: "Email requis." });
+  }
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id, display_name FROM users WHERE email = ? AND is_active = 1",
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.json({ message: "Si cet email existe, un lien vous a été envoyé." });
+    }
+
+    const user = rows[0];
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+    await db.query(
+      "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
+      [token, expires, user.id]
+    );
+
+    await sendResetPasswordEmail(email, user.display_name, token);
+
+    res.json({ message: "Si cet email existe, un lien vous a été envoyé." });
+  } catch (err) {
+    console.error("Erreur /forgot-password :", err);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// ─────────────────────────────────────────
+// POST /api/auth/reset-password
+// ─────────────────────────────────────────
+router.post("/reset-password", async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) {
+    return res.status(400).json({ error: "Token et mot de passe requis." });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: "Le mot de passe doit faire au moins 8 caractères." });
+  }
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ error: "Token invalide ou expiré." });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    await db.query(
+      "UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
+      [hash, rows[0].id]
+    );
+
+    res.json({ message: "Mot de passe réinitialisé avec succès." });
+  } catch (err) {
+    console.error("Erreur /reset-password :", err);
     res.status(500).json({ error: "Erreur serveur." });
   }
 });

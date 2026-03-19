@@ -375,7 +375,8 @@ async function initFeedbackForm() {
       ridesData.forEach(function (ride) {
         const option = document.createElement("option");
         option.value = ride.id;
-        option.textContent = ride.title + " – " + ride.start_date;
+        option.textContent = ride.title + " – " + new 
+          Date(ride.start_date).toLocaleDateString("fr-FR");
         select.appendChild(option);
       });
     }

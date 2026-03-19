@@ -27,3 +27,44 @@ document.getElementById("login-form").addEventListener("submit", async function 
     console.error(err);
   }
 });
+
+// ─────────────────────────────────────────
+// MOT DE PASSE OUBLIÉ
+// ─────────────────────────────────────────
+const forgotLink = document.getElementById("forgot-password-link");
+const forgotWrapper = document.getElementById("forgot-form-wrapper");
+const forgotForm = document.getElementById("forgot-form");
+const forgotMsg = document.getElementById("forgot-msg");
+
+if (forgotLink && forgotWrapper) {
+  forgotLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    forgotWrapper.style.display = forgotWrapper.style.display === "none" ? "block" : "none";
+  });
+}
+
+if (forgotForm) {
+  forgotForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("forgot-email").value.trim();
+
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      forgotMsg.style.display = "block";
+      forgotMsg.style.color = res.ok ? "green" : "red";
+      forgotMsg.textContent = res.ok ? "✅ " + data.message : "❌ " + data.error;
+      if (res.ok) forgotForm.reset();
+    } catch {
+      forgotMsg.style.display = "block";
+      forgotMsg.style.color = "red";
+      forgotMsg.textContent = "❌ Impossible de contacter le serveur.";
+    }
+  });
+}
+
