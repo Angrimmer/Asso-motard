@@ -64,8 +64,10 @@ async function setPassword(req, res) {
 }
 
 async function changePassword(req, res) {
-  const { user_id, old_password, new_password } = req.body;
-  if (!user_id || !old_password || !new_password) {
+  // user_id tiré du token JWT, pas du body (évite qu'un membre modifie le mdp d'un autre)
+  const user_id = req.user.id;
+  const { old_password, new_password } = req.body;
+  if (!old_password || !new_password) {
     return res.status(400).json({ error: "Tous les champs sont requis." });
   }
   if (new_password.length < 8) {

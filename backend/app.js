@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./src/routes/auth");
 const adminRoutes = require("./src/routes/admin");
@@ -10,7 +11,18 @@ const memberRoutes = require("./src/routes/member");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+// CORS — restreint à l'origine autorisée (configurable via .env en prod)
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGIN || "http://localhost:4000"
+}));
+
+// Rate limiting sur les routes d'authentification
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,                   // 20 tentatives max par IP
+  message: { error: "Trop de tentatives, réessayez dans 15 minutes." }
+});
+
 app.use(express.json());
 
 // Fichiers statiques
@@ -23,7 +35,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Routes API
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/member", memberRoutes);
 

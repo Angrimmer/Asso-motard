@@ -13,13 +13,17 @@ const storage = multer.diskStorage({
   }
 });
 
+const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+const allowedExts  = [".jpg", ".jpeg", ".png", ".webp"];
+
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = [".jpg", ".jpeg", ".png", ".webp"];
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (allowed.includes(ext)) cb(null, true);
+    // Double vérification : extension ET MIME type réel
+    const ext  = path.extname(file.originalname).toLowerCase();
+    const mime = file.mimetype;
+    if (allowedExts.includes(ext) && allowedMimes.includes(mime)) cb(null, true);
     else cb(new Error("Format non supporté. JPG, PNG ou WEBP uniquement."));
   }
 });
