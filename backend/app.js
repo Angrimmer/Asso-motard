@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 
@@ -10,6 +11,9 @@ const memberRoutes = require("./src/routes/member");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// Headers HTTP de sécurité (clickjacking, MIME sniffing, etc.)
+app.use(helmet());
 
 // CORS — restreint à l'origine autorisée (configurable via .env en prod)
 app.use(cors({
