@@ -1,3 +1,5 @@
+const API = "http://localhost:4000";
+
 document.addEventListener("DOMContentLoaded", () => {
   const duration = 1500;
 
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1) Compteur MEMBERS
   const membersEl = document.getElementById("members-counter");
   if (membersEl) {
-    fetch("http://localhost:4000/api/member/count")
+    fetch(`${API}/api/member/count`)
       .then((res) => res.json())
       .then((data) => {
         const total = parseInt(data.count, 10) || 0;

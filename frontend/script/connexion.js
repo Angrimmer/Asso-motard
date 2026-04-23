@@ -1,3 +1,5 @@
+const API = "http://localhost:4000";
+
 document.getElementById("login-form").addEventListener("submit", async function (e) {
   e.preventDefault(); // Empêche le rechargement de la page
 
@@ -5,7 +7,7 @@ document.getElementById("login-form").addEventListener("submit", async function 
   const password = document.getElementById("login-password").value;
 
   try {
-    const reponse = await fetch("http://localhost:4000/api/auth/login", {
+    const reponse = await fetch(`${API}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -49,7 +51,7 @@ if (forgotForm) {
     const email = document.getElementById("forgot-email").value.trim();
 
     try {
-      const res = await fetch("http://localhost:4000/api/auth/forgot-password", {
+      const res = await fetch(`${API}/api/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
