@@ -67,6 +67,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ─────────────────────────────────────────
+// MODALES PDF
+// ─────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// Boutons d'ouverture (data-modal)
+document.querySelectorAll(".doc-link[data-modal]").forEach((btn) => {
+  btn.addEventListener("click", () => openModal(btn.dataset.modal));
+});
+
+// Boutons de fermeture (data-close)
+document.querySelectorAll(".pdf-modal-close[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => closeModal(btn.dataset.close));
+});
+
+// Clic sur le fond pour fermer
+document.querySelectorAll(".pdf-modal").forEach((modal) => {
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal(modal.id);
+  });
+});
+
+// Ferme avec Échap
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".pdf-modal.open")
+      .forEach((m) => closeModal(m.id));
+  }
+});
+
 // Gestion du lien Espace membres selon le token
 (function () {
   const link = document.getElementById("nav-membres-link");

@@ -166,8 +166,7 @@
                 l'accompagnement pour les nouveaux motards.
               </p>
               <p>
-                Prix de l'adhésion : <strong>à renseigner ici</strong> (par exemple,
-                tarif pilote / passager). La carte d'adhérent sera présentée et
+                Prix de l'adhésion : <strong>30 à 36 €</strong>. La carte d'adhérent sera présentée et
                 téléchargeable sur cette page.
               </p>
             
@@ -206,8 +205,8 @@
                 47140 DAUSSE<br /><br />
                 Tel : 06 62 05 69 06<br />
                 Email :
-                <a href="mailto:les-feles-du-bocal@orange.fr"
-                  >les-feles-du-bocal@orange.fr</a>
+                <a href="mailto:les-feles-du-bocal@gmail.com"
+                  >les-feles-du-bocal@gmail.com</a>
               </p>
             </div>
 
@@ -227,10 +226,30 @@
                   habilitées du bureau.
                 </li>
                 <li>
-                  Liens vers : Statuts, Charte, Règlement intérieur, Papier CNIL
-                  droit à l’image.
+                  Documents disponibles :
+                  <button class="doc-link" data-modal="modal-statuts">Statuts de l’association</button>
+                  •
+                  <button class="doc-link" data-modal="modal-reglement">Règlement intérieur</button>
+                  •
+                  <a class="doc-link" href="https://www.cnil.fr/" target="_blank" rel="noopener noreferrer">Droit à l’image (CNIL)</a>
                 </li>
               </ul>
+            </div>
+          </div>
+          
+          <!-- MODALE — Statuts -->
+          <div class="pdf-modal" id="modal-statuts">
+            <div class="pdf-modal-inner">
+              <button class="pdf-modal-close" data-close="modal-statuts" aria-label="Fermer">✕</button>
+              <iframe src="src/doc/statut-association.pdf"></iframe>
+            </div>
+          </div>
+
+          <!-- MODALE — Règlement intérieur -->
+          <div class="pdf-modal" id="modal-reglement">
+            <div class="pdf-modal-inner">
+              <button class="pdf-modal-close" data-close="modal-reglement" aria-label="Fermer">✕</button>
+              <iframe src="src/doc/reglement-interieur.pdf"></iframe>
             </div>
           </div>
         </section>

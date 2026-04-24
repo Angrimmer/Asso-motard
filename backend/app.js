@@ -15,9 +15,13 @@ const PORT = process.env.PORT || 4000;
 // Headers HTTP de sécurité (clickjacking, MIME sniffing, etc.)
 app.use(helmet());
 
-// CORS — restreint à l'origine autorisée (configurable via .env en prod)
+// CORS — origines autorisées séparées par des virgules dans .env
+const allowedOrigins = (process.env.ALLOWED_ORIGIN || "http://localhost:4000").split(",").map(o => o.trim());
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || "http://localhost:4000"
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(new Error("CORS non autorisé"));
+  }
 }));
 
 // Rate limiting sur les routes d'authentification
