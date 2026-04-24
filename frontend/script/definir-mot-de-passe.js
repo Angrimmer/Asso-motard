@@ -1,5 +1,3 @@
-const API = "http://localhost:4000";
-
 const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 const mode = params.get("mode"); // "reset" ou absent (activation)

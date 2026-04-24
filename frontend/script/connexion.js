@@ -1,5 +1,3 @@
-const API = "http://localhost:4000";
-
 document.getElementById("login-form").addEventListener("submit", async function (e) {
   e.preventDefault(); // Empêche le rechargement de la page
 
@@ -41,7 +39,7 @@ const forgotMsg = document.getElementById("forgot-msg");
 if (forgotLink && forgotWrapper) {
   forgotLink.addEventListener("click", (e) => {
     e.preventDefault();
-    forgotWrapper.style.display = forgotWrapper.style.display === "none" ? "block" : "none";
+    forgotWrapper.classList.toggle("visible");
   });
 }
 

@@ -124,6 +124,37 @@
   text-decoration: underline;
 }
 
+/* ── Formulaire mot de passe oublié (contrôlé par JS) ── */
+#forgot-form-wrapper {
+  display: none;
+  margin-top: 1.5rem;
+}
+
+#forgot-form-wrapper.visible {
+  display: block;
+}
+
+#forgot-form button {
+  margin-top: 0.75rem;
+}
+
+#forgot-msg {
+  display: none;
+  margin-top: 0.75rem;
+}
+
+/* ── Cards definir-mot-de-passe (contrôlées par JS) ── */
+#card-form,
+#card-error,
+#card-success {
+  display: none;
+}
+
+#error-msg {
+  color: red;
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .login-card {
