@@ -397,6 +397,69 @@
 }
 
 
+/* ── Éléments cachés par défaut (contrôlés par JS) ── */
+
+#admin-block { display: none; }
+
+#idea-msg,
+#feedback-msg,
+#member-upload-msg,
+#ride-form-msg,
+#upload-photo-msg {
+  display: none;
+  margin-top: 0.5rem;
+}
+
+#create-user-msg {
+  display: none;
+  margin-top: 0.6rem;
+}
+
+#ride-cancel-btn { display: none; }
+
+/* Bouton neutre (annuler) */
+.btn-cancel {
+  background: transparent;
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+/* Ligne d'actions de formulaire */
+.form-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+
+/* Textes de chargement */
+.loading-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Note descriptive dans le panneau admin */
+.admin-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Formulaire création membre */
+#create-user-form { max-width: 420px; }
+
+/* Wrapper bouton galerie */
+.gallery-cta-wrapper {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.gallery-cta-wrapper .nav-cta {
+  display: inline-block;
+  padding: 0.7rem 2rem;
+  font-size: 0.9rem;
+}
+
 /* Responsive */
 
 @media (max-width: 960px) {

@@ -68,7 +68,7 @@
                   <label for="idea-content">Votre idée</label>
                   <textarea id="idea-content" placeholder="Proposez une idée de sortie, d'événement, d'amélioration…"></textarea>
                   <button type="submit">Envoyer au bureau</button>
-                  <p id="idea-msg" style="display:none; margin-top: 0.5rem;"></p>
+                  <p id="idea-msg"></p>
                 </form>
               </article>
 
@@ -94,7 +94,7 @@
                   <label for="feedback-comment">Votre avis</label>
                   <textarea id="feedback-comment" placeholder="Ce que vous avez aimé, ce qui peut être amélioré…"></textarea>
                   <button type="submit">Envoyer l'avis</button>
-                  <p id="feedback-msg" style="display:none; margin-top: 0.5rem;"></p>
+                  <p id="feedback-msg"></p>
                 </form>
               </article>
 
@@ -115,14 +115,14 @@
                   <input id="photo-upload-member" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
               
                   <button type="submit">Soumettre au bureau</button>
-                  <p id="member-upload-msg" style="display:none; margin-top:0.5rem;"></p>
+                  <p id="member-upload-msg"></p>
                 </form>
               </article>
                 
             </div>
 
             <!-- BLOC ADMIN / BUREAU — caché par défaut -->
-            <div id="admin-block" style="display:none;">
+            <div id="admin-block">
             
               <!-- Sidebar navigation -->
               <nav class="admin-nav">
@@ -181,18 +181,18 @@
                           <textarea id="ride-short-desc" placeholder="Résumé en une phrase…"></textarea>
                           <label for="ride-full-desc">Compte rendu complet (optionnel)</label>
                           <textarea id="ride-full-desc" placeholder="Compte rendu détaillé de la sortie…" rows="5"></textarea>
-                          <div style="display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:0.3rem;">
+                          <div class="form-actions">
                             <button type="submit" id="ride-submit-btn">➕ Créer la sortie</button>
-                            <button type="button" id="ride-cancel-btn" style="display:none; background:transparent; border-color:var(--text-muted); color:var(--text-muted);">Annuler</button>
+                            <button type="button" id="ride-cancel-btn" class="btn-cancel">Annuler</button>
                           </div>
-                          <p id="ride-form-msg" style="display:none; margin-top:0.5rem;"></p>
+                          <p id="ride-form-msg"></p>
                         </form>
                       </div>
                       <!-- Liste -->
                       <div class="admin-list-col">
                         <h4>Sorties existantes</h4>
                         <div id="rides-admin-list">
-                          <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                          <p class="loading-text">Chargement…</p>
                         </div>
                       </div>
                     </div>
@@ -219,14 +219,14 @@
                           <label for="photo-upload-admin">Sélectionner des photos</label>
                           <input id="photo-upload-admin" type="file" multiple accept=".jpg,.jpeg,.png,.webp" />
                           <button type="submit">Publier les photos</button>
-                          <p id="upload-photo-msg" style="display:none; margin-top:0.5rem;"></p>
+                          <p id="upload-photo-msg"></p>
                         </form>
                       </div>
                       <!-- En attente -->
                       <div class="admin-list-col">
                         <h4>Photos en attente de validation</h4>
                         <div id="pending-photos-list">
-                          <p style="color:var(--text-muted); font-size:0.9rem;">Chargement…</p>
+                          <p class="loading-text">Chargement…</p>
                         </div>
                       </div>
                     </div>
@@ -252,10 +252,10 @@
                   </div>
                   <div class="admin-panel-body">
                     <h4>Créer un compte membre</h4>
-                    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.8rem;">
+                    <p class="admin-desc">
                       Renseignez les informations du nouveau membre. Un email d'activation lui sera envoyé automatiquement.
                     </p>
-                    <form class="simple-form" id="create-user-form" style="max-width:420px;">
+                    <form class="simple-form" id="create-user-form">
                       <label for="new-email">Email</label>
                       <input type="email" id="new-email" placeholder="membre@exemple.com" required />
                       <label for="new-name">Nom affiché</label>
@@ -266,7 +266,7 @@
                         <option value="bureau">Bureau</option>
                         <option value="admin">Admin</option>
                       </select>
-                      <p id="create-user-msg" style="display:none; margin-top:10px;"></p>
+                      <p id="create-user-msg"></p>
                       <button type="submit">Envoyer l'invitation</button>
                     </form>
                   </div>
@@ -335,8 +335,8 @@
             <!-- 3 photos injectées par JS -->
           </div>
         
-          <div style="text-align:center; margin-top:1.5rem;">
-            <a href="galerie.html" class="nav-cta" style="display:inline-block; padding:0.7rem 2rem; font-size:0.9rem;">
+          <div class="gallery-cta-wrapper">
+            <a href="galerie.html" class="nav-cta">
               Voir toute la galerie
             </a>
           </div>
