@@ -93,8 +93,7 @@ async function initRidePage() {
         });
       } else {
         const placeholder = document.createElement("p");
-        placeholder.style.fontSize = "0.85rem";
-        placeholder.style.color = "var(--text-muted)";
+        placeholder.className = "loading-text";
         placeholder.textContent = "Pas encore de photos pour cette sortie.";
         galleryEl.appendChild(placeholder);
       }
