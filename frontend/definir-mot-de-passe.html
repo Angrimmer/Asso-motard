@@ -28,7 +28,7 @@
           <h1 class="login-title">Vérification en cours...</h1>
         </div>
 
-        <div class="login-card" id="card-form" style="display:none;">
+        <div class="login-card" id="card-form">
           <div class="login-icon">🔐</div>
           <h1 class="login-title">Définir mon mot de passe</h1>
           <p class="login-subtitle" id="welcome-msg"></p>
@@ -49,7 +49,7 @@
               placeholder="Répétez votre mot de passe"
               required/>
 
-            <p id="error-msg" style="color:red; display:none;"></p>
+            <p id="error-msg"></p>
 
             <div class="login-actions">
               <button type="submit" class="login-btn">Activer mon compte</button>
@@ -57,14 +57,14 @@
           </form>
         </div>
 
-        <div class="login-card" id="card-error" style="display:none;">
+        <div class="login-card" id="card-error">
           <div class="login-icon">❌</div>
           <h1 class="login-title">Lien invalide</h1>
           <p class="login-subtitle">Ce lien d'activation est invalide ou a expiré (48h).</p>
           <p class="login-note">Contactez l'administrateur pour recevoir un nouveau lien.</p>
         </div>
 
-        <div class="login-card" id="card-success" style="display:none;">
+        <div class="login-card" id="card-success">
           <div class="login-icon">✅</div>
           <h1 class="login-title">Compte activé !</h1>
           <p class="login-subtitle">Votre mot de passe a été défini avec succès.</p>

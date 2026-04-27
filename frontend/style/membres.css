@@ -15,7 +15,7 @@
 
 .rides-filter {
   padding: 0.35rem 0.9rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);
   background: transparent;
   color: var(--text-muted);
@@ -29,7 +29,7 @@
 .rides-filter:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(255, 180, 0, 0.08);
+  background: var(--accent-hover);
 }
 
 .rides-table {
@@ -72,7 +72,7 @@
 .badge {
   display: inline-block;
   padding: 0.15rem 0.45rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -106,7 +106,7 @@
   align-items: center;
   padding: 0.75rem;
   border: 1px solid var(--border-soft);
-  border-radius: 8px;
+  border-radius: var(--radius-input);
   margin-bottom: 0.75rem;
   background: rgba(11, 28, 45, 0.6);
 }
@@ -173,7 +173,7 @@
 
 .ride-btn {
   padding: 0.3rem 0.8rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);
   background: transparent;
   color: var(--text-muted);
@@ -201,8 +201,8 @@
 /* Blocs membres */
 
 .members-block {
-  background: rgba(5, 18, 34, 0.95);
-  border-radius: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
   border: 1px solid var(--border-soft);
   padding: 1.2rem;
   font-size: 0.9rem;
@@ -232,9 +232,9 @@
 .simple-form input[type="text"] {
   width: 100%;
   padding: 0.5rem 0.6rem;
-  border-radius: 8px;
+  border-radius: var(--radius-input);
   border: 1px solid var(--border-soft);
-  background: #030911;
+  background: var(--bg-input);
   color: var(--text-light);
   font-family: inherit;
 }
@@ -243,7 +243,7 @@
   align-self: flex-start;
   margin-top: 0.3rem;
   padding: 0.55rem 1.2rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--accent);
   background: var(--accent);
   color: var(--text-dark);
@@ -299,11 +299,11 @@
 }
 
 .gallery-preview-item {
-  border-radius: 8px;
+  border-radius: var(--radius-input);
   overflow: hidden;
   border: 1px solid var(--border-soft);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform var(--transition), border-color var(--transition);
   aspect-ratio: 4/3;
 }
 
@@ -335,20 +335,20 @@
 
 .admin-nav-btn {
   padding: 0.5rem 1.2rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);
   background: transparent;
   color: var(--text-muted);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
 }
 
 .admin-nav-btn:hover,
 .admin-nav-btn.active {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(255, 180, 0, 0.08);
+  background: var(--accent-hover);
 }
 
 .admin-panels {
@@ -373,8 +373,8 @@
 }
 
 .admin-panel-body {
-  background: rgba(5, 18, 34, 0.95);
-  border-radius: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
   border: 1px solid var(--border-soft);
   padding: 1.5rem;
 }
@@ -430,12 +430,6 @@
   gap: 0.7rem;
   flex-wrap: wrap;
   margin-top: 0.3rem;
-}
-
-/* Textes de chargement */
-.loading-text {
-  color: var(--text-muted);
-  font-size: 0.9rem;
 }
 
 /* Note descriptive dans le panneau admin */
@@ -500,12 +494,7 @@
     padding: 2rem 1.7rem 2.5rem;
   }
 
-  .members-gallery-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
+  .members-gallery-grid,
   .gallery-preview-grid {
     grid-template-columns: 1fr;
   }
