@@ -42,8 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Menu burger
   const burgerBtn = document.getElementById("burger-btn");
   const navLinks = document.getElementById("nav-links");
-    console.log("burgerBtn =", burgerBtn);
-    console.log("navLinks =", navLinks);
 
   if (burgerBtn && navLinks) {
     // Accessibilité de base
