@@ -5,9 +5,9 @@ const helmet = require("helmet");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 
-const authRoutes = require("./src/routes/auth");
-const adminRoutes = require("./src/routes/admin");
-const memberRoutes = require("./src/routes/member");
+const authRoutes = require("./src/routes/auth.routes");
+const adminRoutes = require("./src/routes/admin.routes");
+const memberRoutes = require("./src/routes/member.routes");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
